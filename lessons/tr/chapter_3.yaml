@@ -20,7 +20,7 @@
     https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=222882553c5c99a43dec043ae2d747f9
 - title: Çağrı Yöntemleri
   content_markdown: >
-    İşlevlere benzemelerine rağmen yöntemlerin belirli bir veri türüyle ilişkilileri vardır.
+    İşlevlere benzemelerine rağmen yöntemlerin belirli bir veri türüyle ilişkisi vardır.
 
 
     **Statik yöntemler** — türün kendisine ait olan ve `::` işleciyle çağrılan yöntemlerdir.
