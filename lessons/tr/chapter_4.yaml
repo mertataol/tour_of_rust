@@ -28,7 +28,7 @@
 
 
     Rust'ta `null` anahtar kelimesi olmamasına rağmen boş değer kavramı 
-    ihmal edilmez. Bir değerin yokluğu **enum** türü kullanarak temsil temsil 
+    ihmal edilmez. Bir değerin yokluğu **enum** türü kullanarak temsil 
     edilebilir.
 
 
@@ -120,7 +120,7 @@
      
     1. Option/Result içindeki değeri alın,
 
-    2. ğer enum türü None/Err türündeyse `panic!` kodunu oluşturun. 
+    2. Eğer enum türü None/Err türündeyse `panic!` kodunu oluşturun. 
     *Panik üretildiğinde Rust programlarının işletilmeleri bir hata mesajı eşliğinde durdurulur.*
 
 
@@ -194,6 +194,6 @@
     Bu bölümde jenerik türlerin bizi ne kadar güçlendirdiğini öğrendik!
     Her ne kadar burada öğrendiklerimizin nasıl kullanılacağını tam olarak 
     kavrayamamış olsanız da kodlarımızda defalarca karşılaşacağınız ana 
-    fikirlere dikkat etmniz yeterlidir. İşlevlerimiz yoğunlaşıyor! 
+    fikirlere dikkat etmeniz yeterlidir. İşlevlerimiz yoğunlaşıyor! 
     Bir sonraki bölümümüzü Rust'ın önemli kavramlarından biri olan 
     **Veri Mülkiyeti**ni incelemeye ayıracağız.
