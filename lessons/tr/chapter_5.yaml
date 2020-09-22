@@ -198,7 +198,7 @@
   content_markdown: >
     Turun bu bölümüne kadar gelebildiğiniz için bir kutlamayı hak ediyorsunuz: Tebrikler:-)
     Öğrenilecek çok şey olduğunun ben de farkındayım ama yine de size iyi bir Rustacean olma 
-    yolunda olduğunuzu söylemek istiyorum. Ve umuyorum bir programlama dili olarak Rust'un, 
+    yolunda olduğunuzu söylemek istiyorum. Ve umuyorum bir programlama dili olarak Rust'ın, 
     sistem programlama alanında yaygın şekilde karşılaşılan bu zorlukları nasıl çözmeyi 
     amaçladığı anlaşılabiliyordur:
 
@@ -217,5 +217,5 @@
     * Derleyicinin güvenlik garantisi sunmadığı alanları açıkça belirtmemek.
 
 
-    Öğrendiklerimizden bazılarını, Rust'un metin verilerini nasıl işlediğini
+    Öğrendiklerimizden bazılarını, Rust'ın metin verilerini nasıl işlediğini
     tartıştığımız bir sonraki bölümümüzde uygulamaya sokacağız.
