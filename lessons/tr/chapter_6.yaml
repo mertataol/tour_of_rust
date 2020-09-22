@@ -1,6 +1,6 @@
 - title: Bölüm 6 - Metin
   content_markdown: >
-    Artık Rust'un belleği ele alış şeklini biraz da olsa anladığımıza göre, 
+    Artık Rust'ın belleği ele alış şeklini biraz da olsa anladığımıza göre, 
     metinleri tartışmaya odaklanabiliriz. Rust diğer dillerde karşılaşmayabileceğiniz, 
     uluslararası metin desteği ve bu desteğin bit düzeyi sorunlarıyla oldukça ilgili olduğundan, 
     bu sorunların üstesinden gelebilen yetenekli araçlara sahiptir.
@@ -156,7 +156,7 @@
     Tıpkı `println!` makrosu gibi `format!` makrosunda da, parametreli dizgeler kullanılır!
 
 
-    Bu makronun sunduğu olanaklar, mütevazı **Rust Turu** notlarınasığdırılamayacak kadar geniş olduğundan, 
+    Bu makronun sunduğu olanaklar, mütevazı **Rust Turu** notlarına sığdırılamayacak kadar geniş olduğundan, 
     daha fazlasını öğrenmek için, [burada bulunan belgeleri](https://doc.rust-lang.org/std/fmt/) inceleyebilirsiniz.
   code: >-
     https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=260edbae6d54a7250270903a87a24030
@@ -164,7 +164,7 @@
   content_markdown: |
     Birçok tür `to_string` metodu kullanılarak dizgelere dönüştürülebilir.
 
-    Jenerik yapıdak bir ayrıştırma metodu olan `parse`, bir dizge yapısını veya bir karakter dizgesini, 
+    Jenerik yapıda bir ayrıştırma metodu olan `parse`, bir dizge yapısını veya bir karakter dizgesini, 
     başka bir türe dönüştürmek için oldukça kullanışlıdır. Bununla birlikte `parse` metodu başarısız 
     olma ihtimaline karşı bir `Result` türü döndürür.
   code: >-
@@ -177,5 +177,5 @@
 
 
     Şimdiye kadar, Rust'a prosedürel programlama yani işlev ve veri odaklı programlama paradigması 
-    merceğinden baktık, ancak gelecek bölümlerde Rust'un nesne yönelimli programlama paradigmasının 
+    merceğinden baktık, ancak gelecek bölümlerde Rust'ın nesne yönelimli programlama paradigmasının 
     ortaya çıkardığı özellikler ve yetenekler hakkında konuşmaya başlayacağız.
