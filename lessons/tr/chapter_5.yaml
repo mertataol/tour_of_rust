@@ -79,14 +79,13 @@
     veri yarışlarına neden olabileceğinden dolayı engeller.
   code: >-
     https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=ebcab426b85e6c2031c54f18894689bc
-- title: Referansı Kaldırmak - Dereferencing
+- title: Referansını Almak
   content_markdown: >
-    `&mut` referansı kullanıldığı durumlarda, 
-    kaynak sahibinin tuttuğu değer `*` işleci ile yeniden ayarlanabilir.
+    `&mut` referansı kullanıldığında, kaynak sahibinin tuttuğu değer `*` işleci ile yeniden ayarlanabilir.
 
 
-    Sonraki bölümlerde inceleyeceğimiz gibi, yine bu işleç yardımıyla, 
-    kopyalama özelliğine sahip bir türün kopyası da alınabilir.
+   Ayrıntılarına akıllı işaretçiler bölümünde gireceğimiz **dereferencing** işlemini gerçekleştiren bu işleç yardımıyla, 
+   kopyalama özelliğine sahip bir türün kopyası da elde edilebilir.
   code: >-
     https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=045dd6870e253ec70b42c3832f88740a
 - title: Ödünç Alınan Verinin Taşınması
