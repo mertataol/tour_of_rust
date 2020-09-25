@@ -148,8 +148,9 @@
     https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=377f65f1c68fd2e2375ec30513a17080
 - title: Bölüm 3 - Sonuç
   content_markdown: >
-    Harika! Artık fikirlerimizi koda dökebileceğimiz temel araçlara sahibiz. 
+    Harika! Artık fikirlerimizi kodlarla ifade edebileceğimiz temel araçlara sahibiz.
     
-    Sanıyorum bundan böyle Rust'un temel işlemlerinin türlerle nasıl özgün 
-    ve uyum içinde çalıştığını daha net görebiliriz. Sonraki bölümde veri 
-    türlerimizin temsiline esneklik kazandıran **jenerikler** kavramına değineceğiz.
+    Umuyorum bu bölümde Rust'un temel işlemlerinin, türleriyle nasıl özlü ve uyumlu şekilde 
+    çalıştığını daha net kavrayabilmişizdir. Sonraki bölümde veri yapılarının tek bir tür yerine, 
+    genellenerek türden bağımsız hale getirilmesi ve türlerin daha esnek biçimde temsilini 
+    sağlayan **genel türler** kavramına değineceğiz.
