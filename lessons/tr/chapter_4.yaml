@@ -1,22 +1,20 @@
-- title: Bölüm 4 - Jenerik Türler
+- title: Bölüm 4 - Genel Türler
   content_markdown: >
-    Rust'ta jenerik türler oldukça önemlidir. 
+    Rust'ta genel türler oldukça önemlidir. 
     
-    Halihazırda bir veri içermeyen *null* değerlerin temsilinde, 
-    hata işleme ve koleksiyonlar gibi pek çok yerde kullanılırlar! 
-    
-    Bu bölümde, sıklıkla kullanacağımız temel jenerik türleri öğreneceğiz.
-- title: Jenerik TürLer Nelerdir?
+   Halihazırda bu türler, veri içermeyen *null* değerlerin temsilinde, hata işleme yöntemlerinde 
+   ve koleksiyonlar ile çalışırken sıklıkla karşımıza çıkarlar. Bu bölümde, bilgilerimiz çeşitlendikçe 
+   daha sık kullanmaya yelteneceğimiz genel türlerin temellerini öğreneceğiz. 
+- title: Genel TürLer Nelerdir?
   content_markdown: >
-    Jenerik TürLer derleyicinin, kısmen tanımladığımız bir yapı (`struct`) 
-    yahut numaralandırmayı (`enum`), kodun kullanım şekline göre 
-    değerlendirip, mükemmel olarak tanımlanmış derleme zamanı sürümünü 
-    oluşturmasına olanak tanırlar.
+    Derleyicinin kısmen tanımladığımız bir yapı (`struct`) yahut numaralandırmayı (`enum`), kodun kullanım 
+    şekline göre değerlendirip, mükemmel şekilde tanımlanmış **derleme zamanı sürümü**nü oluşturmasına olanak 
+    sağlayan genelleştirilmiş türlerdir.
 
 
-    Derleyici genellikle nihai türü, kullanılan bağlamı gözlemleyerek çıkarabilir,
-    ancak gerektiğinde nihai türü açıkça bildirmek için, benim en iyi arkadaşım olan
-    ve `turbofish` adıyla bilinen `::<T>` işlecini kullanabilirsiniz.
+    Türün genellendiği bir programdaki nihai tür, derleyici tarafından kod bağlamı değerlendirilerek elde edilir. 
+    Bununla birlikte bazı durumlarda, tür çıkarsama işlemi karmaşaya neden olabileceğinden, türün açıkça bildirilmesi gerekebilir. 
+    Bu gibi durumlarda bir yengecin en iyi arkadaşı olan ve benimde çok sevdiğim, `turbofish` adıyla bilinen `::<T>` işlecini kullanabilirsiniz.
   code: >-
     https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=e44e412895772e08f12871e1270c9e31
 - title: Boş Değer Gösterimi
@@ -32,24 +30,21 @@
     edilebilir.
 
 
-    Rust'ta `null` değerlerin olmaması, değer yokluğunun olası tüm hallerini 
-    temsil eden ve **hiç biri** anlamına gelen `None` ifadesinin jenerik 
-    türlerle kullanımına neden olur.
+    Rust'ta `null` değerlerin yokluğu, olmayan değerlerin olası tüm hallerini temsil eden ve **hiç biri** 
+    anlamına gelen `None` ifadesinin, genelleştirilen türler aracılığıyla kullanılmasına neden olur.
   code: >-
     https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=ec66249d0fff94707bdda579060a80ca
 - title: Option
   content_markdown: >
-    Rust'ta yerleşik olarak gelen ve boş değerleri `null` kullanmadan temsil etmemize 
-    izin veren `Option` adında jenerik bir `enum` türü bulunur.
+    Rust'ta yerleşik olarak gelen ve boş değerleri `null` kullanmadan temsil etmemize izin veren `Option` adında 
+    genelleştirilmiş bir `enum` türü bulunur.
 
 
     ```
-
     enum Option<T> {
         None,
         Some(T),
     }
-
     ```
 
 
@@ -65,12 +60,10 @@
 
 
     ```
-
     enum Result<T, E> {
         Ok(T),
         Err(E),
     }
-
     ```
 
 
