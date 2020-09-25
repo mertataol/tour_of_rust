@@ -54,9 +54,8 @@
     https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=0ae77577b8a9f15125029127d9584d66
 - title: Result
   content_markdown: >
-    Rust yerleşik olarak gelen ve başarısız olma ihtimali taşıyan bir değer 
-    döndürmemize izin veren `Result` adlı jenerik bir *enum* türüne de sahiptir. 
-    Bu Rust'ta hataları ele almanın deyimsel bir yoludur.
+    Rust yerleşik olarak gelen ve kodun başarısız olma ihtimalini barındıran değerleri döndürmemize izin veren 
+    `Result` adında genellenmiş bir *enum* türüne de sahiptir. Bu Rust'ta hataları ele almanın deyimsel bir yoludur.
 
 
     ```
@@ -67,8 +66,7 @@
     ```
 
 
-    Bu jenerik türün, virgülle ayrılmış halde *parametreleştirilmiş* iki 
-    farklı türden oluştuğuna dikkat edin.
+    Bu genel türün, virgülle ayrık şekilde *parametreleştirilmiş* iki farklı türden oluştuğuna dikkat edin.
 
 
     Oldukça yaygın olarak kullanılan bu türün örneklerini dilediğiniz yer 
@@ -105,7 +103,7 @@
     https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=fd595fdb472487112b142315a5c5872e
 - title: Kaba Option/Result İşleme
   content_markdown: >
-    Kodlarınızı hızlıca yazıp tamamlamak istediğinizde, `Option`/`Result` türülerinin 
+    Kodlarınızı hızlıca yazıp tamamlamak istediğinizde, `Option`/`Result` türlerinin 
     her birini ayrı ayrı ele almak oldukça yorucu olabilir. Böyle hallerde iki 
     türün de sağladığı ve kodunuzu hızlı ancak kaba şekilde tamamlamanıza olanak 
     sağlayan `unwrap` adındaki işlevden yararlanabilirsiniz. `unwrap` işlevi 
@@ -117,7 +115,7 @@
     *Panik üretildiğinde Rust programlarının işletilmeleri bir hata mesajı eşliğinde durdurulur.*
 
 
-    Bu iki kod parçası eşdeğerdir:
+   Bu iki kod parçası birbirinin eşdeğeridir:
 
 
     ```
@@ -162,29 +160,26 @@
     https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=c6cbfcbf896a9a9570a769078db7d6c7
 - title: Vektörler
   content_markdown: >
-    Koleksiyonlar en kullanışlı jenerik türlerdendir. Bir koleksiyon türü olan
-    `Vec` yapısı, içeriği dinamik olarak değişebilen dizidir.
+    Koleksiyonlar kullanışlı şekilde genelleştirilebilen veri yapılarıdırlar. Bu koleksiyon türlerinden olan `Vec`, içeriği dinamik olarak 
+    değişebilen diziyi ifade eder.
 
     Bir vektörü elle oluşturmak yerine `vec!` makrosunu kullanarak kolaylıkla oluşturabilirsiniz.
 
 
     `Vec`, vektör elemanları üzerinde yineleyici oluşturan `iter()` metoduna 
-    sahip olduğundan for döngüsü yardımıyla her bir elemanı üzerinde 
-    yineleme işlemi gerçekleştirilebilir.
+    sahip olduğundan, `for` döngüsü kullanarak her bir elemanı üzerinde yineleme yapabilirsiniz.
 
 
     Bir vektör için bellek aşağıdaki gibi şekillenecektir:
 
-    * ``Vec` bir yapı olmakla beraber, dahili olarak heap üzerindeki 
-    öğelerinin sabit uzunluktaki listesine referans içerir.
+    * `Vec` bir yapı olmasına rağmen, heap üzerindeki öğelerinin sabit uzunluktaki listesini gösteren dahili bir referans içerir.
 
-    * Belleğin heap bölgesinde varsayılan bir kapasiteyle oluşturulduğundan, 
-    kapasite yetmediğinde daha büyük bir kapasiteyle yeniden konumlandırılırlar.
+    * Belleğin öbek bölgesinde oluşturulduklarından, varsayılan kapasiteleri yetmediğinde daha büyük bir kapasiteyle yeniden konumlandırılırlar.
   code: >-
     https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=3dcf1f039ab999e485d2c6e562024479
 - title: Bölüm 4 - Sonuç
   content_markdown: >
-    Bu bölümde jenerik türlerin bizi ne kadar güçlendirdiğini öğrendik!
+    Bu bölümde genel türlerin bizi ne kadar güçlendirdiğini öğrendik!
     Her ne kadar burada öğrendiklerimizin nasıl kullanılacağını tam olarak 
     kavrayamamış olsanız da kodlarımızda defalarca karşılaşacağınız ana 
     fikirlere dikkat etmeniz yeterlidir. İşlevlerimiz yoğunlaşıyor! 
