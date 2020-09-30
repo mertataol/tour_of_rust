@@ -1,83 +1,73 @@
-- title: Chapter 7 - Object Oriented Programming
+- title: Bölüm 7 - Nesne Yönelimli Programlama
   content_markdown: >
-    Expressing ideas with functions is a proven way of representing behavior and
-    data (C 
-
-    has been doing it for decades!). Historically, computer science has found
-    other
-
-    useful expressive aggregations and abstractions for data. You may be
-    familiar with object oriented programming (OOP) as one
-
-    such way. In this chapter we'll explore the Rust programming language beyond
-    functions.
-- title: What Is OOP?
+    Onlarca yıldır kullanılan C Programlama dilinde olduğu gibi, fikirleri işlevlerle ifade etmek, veriler ve program davranışını 
+    temsil etmenin kanıtlanmış bir yoludur. Ancak zaman içinde bilgisayar bilimi, veri toplama ve soyutlamaya izin veren başka 
+    programlama paradigmalarından da yararlanmıştır.
+    
+    Diğer programlama dillerinden geliyorsanız, bu programlama paradigmalarından biri olan nesne yönelimli programlamaya, yani **OOP**'a 
+    aşina olabilirsiniz. 
+    
+    Bu bölümde Rust programlama dilini, işlevlerin ötesinde bir programlama dili olarak yeniden keşfedeceğiz.
+- title: Nesne Yönelimli Programlama Nedir?
   content_markdown: >
-    Object oriented programming roughly refers to programming languages that
-    have a number of iconic features:
+    Nesne yönelimli programlama aşağıda kabaca özetlenen, bir dizi ikonik özelliğe sahip programlama dillerini ifade eder:
 
-    * Encapsulation - Associating data and functions into the conceptual unit of
-    a single type called an *object*.
+    * Kapsülleme  - Veri ve işlevleri, tek bir türden oluşan ve **nesne** adı verilen kavramsal birimle ilişkilendirebilmek.
 
-    * Abstraction - Hiding data and function members to obfuscate implementation
-    details of an object.
+    * Soyutlama - Bir nesnenin uygulama ayrıntılarını gizlemek için veri ve üye işlevlerini saklayabilmek.
 
-    * Polymorphism - The ability to interacting with an object from different
-    functional perspectives.
+    * Çok biçimlilik - Bir nesneyle farklı işlevsel perspektiflerden etkileşim kurma yeteneği.
 
-    * Inheritance - The ability to inherit data and behavior from other objects.
-- title: Rust Is Not OOP
+    * Kalıtım - Diğer nesnelerin veri ve davranışlarını devralma yeteneği.
+- title: Rust Bir Nesne Yönelimli Programlama Dili Değildir
   content_markdown: >
-    Rust lacks inheritance of data and behavior in any meaningful way.
+    Rust, veri ve davranışları anlamlı olacak şekilde miras alma yeteneğinden yoksundur.
 
 
-    * Structs cannot inherit fields from a parent struct.
+    * Yapılar **alanlarını** bir üst yapıdan kalıtım yoluyla devralamazlar.
 
-    * Structs cannot inherit functions from a parent struct.
+    * Yapılar **işlevlerini** bir üst yapıdan kalıtım yoluyla edinemezler.
 
 
-    That said, Rust implements many programming language features, so that you
-    might not mind this lacking.
-- title: Encapsulation With Methods
+    Ancak Rust, bu eksiklikleri giderecek pek çok özellik sunduğundan, kalıtımın yokluğunu hissetmeyeceksiniz.
+- title: Metotlarla Kapsülleme
   code: >-
-    https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&code=struct%20SeaCreature%20%7B%0A%20%20%20%20noise%3A%20String%2C%0A%7D%0A%0Aimpl%20SeaCreature%20%7B%0A%20%20%20%20fn%20get_sound(%26self)%20-%3E%20%26str%20%7B%0A%20%20%20%20%20%20%20%20%26self.noise%0A%20%20%20%20%7D%0A%7D%0A%0Afn%20main()%20%7B%0A%20%20%20%20let%20creature%20%3D%20SeaCreature%20%7B%0A%20%20%20%20%20%20%20%20noise%3A%20String%3A%3Afrom(%22blub%22)%2C%0A%20%20%20%20%7D%3B%0A%20%20%20%20println!(%22%7B%7D%22%2C%20creature.get_sound())%3B%0A%7D%0A
+    https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=900c806a5b91969e8ae862e94aedc94a
   content_markdown: >
-    Rust supports the concept of an *object* that is a struct associated with
-    some functions (also known as *methods*).
+    Rust, **metot** veya **yöntem** olarak adlandırabileceğimiz, belirli işlevlerle ilişkilendirilmiş bir veri yapısı olan **nesne** kavramını destekler.
 
 
-    The first parameter of any method must be a reference to the instance
-    associated with the method call (e.g. `instanceOfObj.foo()`). Rust uses:
+    Herhangi bir metodun ilk parametresi, `nesne_ornegi.metot()` söz dizimindeki gibi, o metoda yapılan çağrı ile ilişkili olan, **örneğin kendisini** 
+    referans almalıdır. Bu ilk parametre için Rust aşağıdaki referans türlerini kullanmaktadır:
 
-    * `&self` - Immutable reference to the instance.
+    * `&self` - Örnek için değişmez bir referans.
 
-    * `&mut self` - Mutable reference to the instance.
+    * `&mut self` - Örnek için değişken bir referans.
 
 
-    Methods are defined within an implementation block with keyword `impl`:
+    Metotlar, `impl` anahtar kelimesiyle başlayan bir uygulama bloğunda tanımlanır:
 
     ```rust
 
-    impl MyStruct { 
+    impl BirYapi { 
         ...
-        fn foo(&self) {
+        fn ornekle(&self) {
             ...
         }
     }
 
     ```
-- title: Abstraction With Selective Exposure
+- title: Farklı Görünürlük Seviyelerindeki Soyutlamalar
   code: >-
-    https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&code=struct%20SeaCreature%20%7B%0A%20%20%20%20pub%20name%3A%20String%2C%0A%20%20%20%20noise%3A%20String%2C%0A%7D%0A%0Aimpl%20SeaCreature%20%7B%0A%20%20%20%20pub%20fn%20get_sound(%26self)%20-%3E%20%26str%20%7B%0A%20%20%20%20%20%20%20%20%26self.noise%0A%20%20%20%20%7D%0A%7D%0A%0Afn%20main()%20%7B%0A%20%20%20%20let%20creature%20%3D%20SeaCreature%20%7B%0A%20%20%20%20%20%20%20%20name%3A%20String%3A%3Afrom(%22Ferris%22)%2C%0A%20%20%20%20%20%20%20%20noise%3A%20String%3A%3Afrom(%22blub%22)%2C%0A%20%20%20%20%7D%3B%0A%20%20%20%20println!(%22%7B%7D%22%2C%20creature.get_sound())%3B%0A%7D%0A
+    https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=403679578ea7c5d804cfc749a80e97ba
   content_markdown: >
-    Rust can hide the inner workings of objects.
+    Rust, nesnelerin iç işleyişi ve yapılarını gizleyebilir.
 
 
-    By default fields and methods are accessible only to the module they belong
-    to.
+    Halihazırda yapı tarafından bildirilen tüm alan ve metodlara, yalnızca ait oldukları modül tarafından erişilebileceği varsayılır.
 
 
-    The `pub` keyword exposes struct fields and methods outside of the module.
+    Yapı alan ve metodlarının modül dışından erişilebilir olması için `pub` anahtar sözcüğü kullanılır.
 - title: Polymorphism With Traits
   code: >-
     https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&code=struct%20SeaCreature%20%7B%0A%20%20%20%20pub%20name%3A%20String%2C%0A%20%20%20%20noise%3A%20String%2C%0A%7D%0A%0Aimpl%20SeaCreature%20%7B%0A%20%20%20%20pub%20fn%20get_sound(%26self)%20-%3E%20%26str%20%7B%0A%20%20%20%20%20%20%20%20%26self.noise%0A%20%20%20%20%7D%0A%7D%0A%0Atrait%20NoiseMaker%20%7B%0A%20%20%20%20fn%20make_noise(%26self)%3B%0A%7D%0A%0Aimpl%20NoiseMaker%20for%20SeaCreature%20%7B%0A%20%20%20%20fn%20make_noise(%26self)%20%7B%0A%20%20%20%20%20%20%20%20println!(%22%7B%7D%22%2C%20%26self.get_sound())%3B%0A%20%20%20%20%7D%0A%7D%0A%0Afn%20main()%20%7B%0A%20%20%20%20let%20creature%20%3D%20SeaCreature%20%7B%0A%20%20%20%20%20%20%20%20name%3A%20String%3A%3Afrom(%22Ferris%22)%2C%0A%20%20%20%20%20%20%20%20noise%3A%20String%3A%3Afrom(%22blub%22)%2C%0A%20%20%20%20%7D%3B%0A%20%20%20%20creature.make_noise()%3B%0A%7D%0A
