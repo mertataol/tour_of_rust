@@ -68,138 +68,118 @@
 
 
     Yapı alan ve metodlarının modül dışından erişilebilir olması için `pub` anahtar sözcüğü kullanılır.
-- title: Polymorphism With Traits
+- title: Özellikler ve Çok Biçimlilik
   code: >-
-    https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&code=struct%20SeaCreature%20%7B%0A%20%20%20%20pub%20name%3A%20String%2C%0A%20%20%20%20noise%3A%20String%2C%0A%7D%0A%0Aimpl%20SeaCreature%20%7B%0A%20%20%20%20pub%20fn%20get_sound(%26self)%20-%3E%20%26str%20%7B%0A%20%20%20%20%20%20%20%20%26self.noise%0A%20%20%20%20%7D%0A%7D%0A%0Atrait%20NoiseMaker%20%7B%0A%20%20%20%20fn%20make_noise(%26self)%3B%0A%7D%0A%0Aimpl%20NoiseMaker%20for%20SeaCreature%20%7B%0A%20%20%20%20fn%20make_noise(%26self)%20%7B%0A%20%20%20%20%20%20%20%20println!(%22%7B%7D%22%2C%20%26self.get_sound())%3B%0A%20%20%20%20%7D%0A%7D%0A%0Afn%20main()%20%7B%0A%20%20%20%20let%20creature%20%3D%20SeaCreature%20%7B%0A%20%20%20%20%20%20%20%20name%3A%20String%3A%3Afrom(%22Ferris%22)%2C%0A%20%20%20%20%20%20%20%20noise%3A%20String%3A%3Afrom(%22blub%22)%2C%0A%20%20%20%20%7D%3B%0A%20%20%20%20creature.make_noise()%3B%0A%7D%0A
+    https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=c8159fc427a65f979803374f1c236ea7
   content_markdown: >
-    Rust supports polymorphism with traits. Traits allow us to associate a set
-    of methods with a struct type. 
+    Rust'ta bir dizi yöntemi **struct** ve **enum** gibi yapılandırılmış türlerle ilişkilendirmemize izin veren yapılara özellik adını veririz. 
+    Ve Rust çok biçimlilik özellikler aracılığıyla desteklenir. 
 
 
-    We first define the signatures of methods of a trait within:
+    Bir özelliğe ait yöntemi aşağıdaki gibi tanımlayabilirsiniz:
 
 
     ```
 
-    trait MyTrait {
-        fn foo(&self);
+    trait BirOzellik {
+        fn bir_yontem(&self);
         ...
     }
 
     ```
 
 
-    When a struct implements a trait, it establishes a contract that allows us
-    to indirectly interact with the struct 
-
-    through the trait type (e.g. `&dyn MyTrait`) without having to know the real
-    type.
+    Bir yapı bir özelliği uyguladığında, `&dyn BirOzellik` şeklindeki özellik türü sayesinde ve gerçek tür bilgisine ihtiyaç duymaksızın, 
+    kendisiyle  dolaylı şeklide etkileşebileceğimiz bir sözleşme oluşturur.
 
 
-    A struct's implemented traits methods are defined within an implementation
-    block:
+    Yapı tarafından uygulanması istenen özellik yöntemleri, bir uygulama bloğunda tanımlanmak zorundadır:
 
 
     ```rust
 
-    impl MyTrait for MyStruct { 
-        fn foo(&self) {
+    impl BirOzellik for BirYapi { 
+        fn bir_yontem(&self) {
             ...
         }
         ... 
     }
 
     ```
-- title: Implemented Methods On Traits
+- title: Özelliklere Uygulanan Yöntemler
   code: >-
-    https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&code=struct%20SeaCreature%20%7B%0A%20%20%20%20pub%20name%3A%20String%2C%0A%20%20%20%20noise%3A%20String%2C%0A%7D%0A%0Aimpl%20SeaCreature%20%7B%0A%20%20%20%20pub%20fn%20get_sound(%26self)%20-%3E%20%26str%20%7B%0A%20%20%20%20%20%20%20%20%26self.noise%0A%20%20%20%20%7D%0A%7D%0A%0Atrait%20NoiseMaker%20%7B%0A%20%20%20%20fn%20make_noise(%26self)%3B%0A%20%20%20%20%0A%20%20%20%20fn%20make_alot_of_noise(%26self)%7B%0A%20%20%20%20%20%20%20%20self.make_noise()%3B%0A%20%20%20%20%20%20%20%20self.make_noise()%3B%0A%20%20%20%20%20%20%20%20self.make_noise()%3B%0A%20%20%20%20%7D%0A%7D%0A%0Aimpl%20NoiseMaker%20for%20SeaCreature%20%7B%0A%20%20%20%20fn%20make_noise(%26self)%20%7B%0A%20%20%20%20%20%20%20%20println!(%22%7B%7D%22%2C%20%26self.get_sound())%3B%0A%20%20%20%20%7D%0A%7D%0A%0Afn%20main()%20%7B%0A%20%20%20%20let%20creature%20%3D%20SeaCreature%20%7B%0A%20%20%20%20%20%20%20%20name%3A%20String%3A%3Afrom(%22Ferris%22)%2C%0A%20%20%20%20%20%20%20%20noise%3A%20String%3A%3Afrom(%22blub%22)%2C%0A%20%20%20%20%7D%3B%0A%20%20%20%20creature.make_alot_of_noise()%3B%0A%7D%0A
+    https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=71bc8fe19162f8f23f9bf9a09a568ccc
   content_markdown: >
-    Traits can have implemented methods.
+    Özelliklerin de uyguladıkları kendi yöntemleri olabilir.
 
 
-    The functions have no direct access to the inner fields of a struct, but it
-    can 
-
-    be useful for sharing behavior between many trait implementors.
-- title: Trait Inheritance
+    Ancak özelliklerin uyguladığı yöntemler yapı alanlarına erişimediklerinden, çeşitli özellik uygulamaları arasındaki davranışları 
+    paylaşırken yararlıdırlar.
+- title: Özellik Kalıtımı
   code: >-
-    https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&code=struct%20SeaCreature%20%7B%0A%20%20%20%20pub%20name%3A%20String%2C%0A%20%20%20%20noise%3A%20String%2C%0A%7D%0A%0Aimpl%20SeaCreature%20%7B%0A%20%20%20%20pub%20fn%20get_sound(%26self)%20-%3E%20%26str%20%7B%0A%20%20%20%20%20%20%20%20%26self.noise%0A%20%20%20%20%7D%0A%7D%0A%0Atrait%20NoiseMaker%20%7B%0A%20%20%20%20fn%20make_noise(%26self)%3B%0A%7D%0A%0Atrait%20LoudNoiseMaker%3A%20NoiseMaker%20%7B%0A%20%20%20%20fn%20make_alot_of_noise(%26self)%20%7B%0A%20%20%20%20%20%20%20%20self.make_noise()%3B%0A%20%20%20%20%20%20%20%20self.make_noise()%3B%0A%20%20%20%20%20%20%20%20self.make_noise()%3B%0A%20%20%20%20%7D%0A%7D%0A%0Aimpl%20NoiseMaker%20for%20SeaCreature%20%7B%0A%20%20%20%20fn%20make_noise(%26self)%20%7B%0A%20%20%20%20%20%20%20%20println!(%22%7B%7D%22%2C%20%26self.get_sound())%3B%0A%20%20%20%20%7D%0A%7D%0A%0Aimpl%20LoudNoiseMaker%20for%20SeaCreature%20%7B%7D%0A%0Afn%20main()%20%7B%0A%20%20%20%20let%20creature%20%3D%20SeaCreature%20%7B%0A%20%20%20%20%20%20%20%20name%3A%20String%3A%3Afrom(%22Ferris%22)%2C%0A%20%20%20%20%20%20%20%20noise%3A%20String%3A%3Afrom(%22blub%22)%2C%0A%20%20%20%20%7D%3B%0A%20%20%20%20creature.make_alot_of_noise()%3B%0A%7D%0A
+    https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=91d069f6e1302f4b4a03d6d17e510864
   content_markdown: |
-    Traits can inherit methods from other traits.
-- title: Dynamic vs Static Dispatch
+    Bir özellik kendi yöntemlerini, diğer özelliklerden kalıtım yoluyla edinebilir.
+- title: Ya Dinamik Ya Statik İletim
   code: >-
-    https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&code=struct%20SeaCreature%20%7B%0A%20%20%20%20pub%20name%3A%20String%2C%0A%20%20%20%20noise%3A%20String%2C%0A%7D%0A%0Aimpl%20SeaCreature%20%7B%0A%20%20%20%20pub%20fn%20get_sound(%26self)%20-%3E%20%26str%20%7B%0A%20%20%20%20%20%20%20%20%26self.noise%0A%20%20%20%20%7D%0A%7D%0A%0Atrait%20NoiseMaker%20%7B%0A%20%20%20%20fn%20make_noise(%26self)%3B%0A%7D%0A%0Aimpl%20NoiseMaker%20for%20SeaCreature%20%7B%0A%20%20%20%20fn%20make_noise(%26self)%20%7B%0A%20%20%20%20%20%20%20%20println!(%22%7B%7D%22%2C%20%26self.get_sound())%3B%0A%20%20%20%20%7D%0A%7D%0A%0Afn%20static_make_noise(creature%3A%20%26SeaCreature)%20%7B%0A%20%20%20%20%2F%2F%20we%20know%20the%20real%20type%0A%20%20%20%20creature.make_noise()%3B%0A%7D%0A%0Afn%20dynamic_make_noise(noise_maker%3A%20%26dyn%20NoiseMaker)%20%7B%0A%20%20%20%20%2F%2F%20we%20don't%20know%20the%20real%20type%0A%20%20%20%20noise_maker.make_noise()%3B%0A%7D%0A%0Afn%20main()%20%7B%0A%20%20%20%20let%20creature%20%3D%20SeaCreature%20%7B%0A%20%20%20%20%20%20%20%20name%3A%20String%3A%3Afrom(%22Ferris%22)%2C%0A%20%20%20%20%20%20%20%20noise%3A%20String%3A%3Afrom(%22blub%22)%2C%0A%20%20%20%20%7D%3B%0A%20%20%20%20static_make_noise(%26creature)%3B%0A%20%20%20%20dynamic_make_noise(%26creature)%3B%0A%7D%0A
+    https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=3d868069b4841fb66d567cc6bb4af46d
   content_markdown: >
-    Methods are executed in two ways:
+    Yöntemler iki şekilde işletilir:
 
-    * static dispatch - When the instance type is known, we have direct
-    knowledge of what function to call.
+    * Statik iletim - Bu çağrı şeklinde örneğin türü zaten bilindiğinden, çağrılacak işlev hakkında doğrudan bilgimiz vardır.
 
-    * dynamic dispatch - When an instance type is not known, we must find out
-    some way of calling the correct function.
+     * Dinamik iletim - Bu çağrı şeklinde örnek türü bilinmediğinden, doğru işlevi çağırmanın bir yolunu bulmamız gerekir.
 
 
-    Trait types `&dyn MyTrait` give us the ability to work with instances of
-    objects indirectly using dynamic dispatch.
+    `&dyn BirOzellik` şeklinde sembolize edebileceğimiz özellik türleri, dinamik iletimi kullanarak, nesne örnekleriyle dolaylı şekilde çalışmamızı sağlarlar.
 
 
-    When dynamic dispatch is used, Rust will encourage you to put `dyn` before
-    your trait type so people are aware.
+    Dinamik iletim çağrılarında Rust, kullanıcıların bu çağrıyı fark edebilmeleri için, özellik türünün önüne `dyn` belirtecini eklememizi ister.
 
 
-    Memory details:
+    Bellek ayrıntıları:
 
-    * Dynamic dispatch is slightly slower because of the pointer chasing to find
-    the real function call.
-- title: Trait Objects
+    * Dinamik iletim, çağrılan işlevin gerçek adresini bulmak için işaretçi takibi gerektirdiğinden, daha yavaş bir yöntem çağrısı olarak kabul edilir.
+- title: Özellik Nesneleri
   content_markdown: >
-    When we pass an instance of an object to a parameter of type `&dyn MyTrait`
-    we pass what is called a *trait object*. 
+    Bir nesne örneğini `&dyn BirOzellik` türündeki bir parametreye ilettiğimizde, özellik nesnesini adını verdiğimiz seyi iletmiş oluruz. 
 
 
-    A trait object is what allows us to indirectly call the correct methods of
-    an instance. A trait object is a struct that holds the pointer of 
-
-    our instance with a list of function pointers to our instance's methods.
+    O halde bir özellik nesnesi: "Bir örneğin doğru metotlarını, dinamik iletim yoluyla ve dolaylı olarak çağırmamıza izin veren, hem örneğin kendi 
+    işaretçisini, hem örneğin işlevlerine yönelik işaretçilerin listesini tutan yapıdır" denilebilir.
 
 
-    Memory details:
+    Bellek ayrıntıları:
 
-    * This list of functions is known in C++ as a *vtable*.
-- title: Handling Unsized Data
+    * C++' da bu işlevler listesi *vtable* olarak bilinmektedir.
+- title: Boyutlandırılmamış Verilerle Çalışmak
   content_markdown: >
-    Traits introduce an interesting challenge when we want to store them within
-    another struct. Traits obfuscate the original
-
-    struct thus it also obfuscates the original size. Unsized values being
-    stored in structs are handled in two ways in Rust:
+    Bir özelliği yapı içinde saklamak istediğimizde, asıl yapı ve bu yapının boyutuna dair bilgilerin, özellik tarafından gizlendiği görülür. 
+    Özelliklerin karşımıza çıkardığı bu ilginç durum, yani yapılarda saklanan boyutlandırılmamış öğeler iki şekilde ele alınır:
 
 
-    * `generics` - Using parameterized types effectively create struct/functions
-    known types and thus known sizes.
+    * `Genel türler` - Genel türler gibi parametreleştirilmiş türlerden faydalanmak, yapı ve işlevleri bilinen tür ve boyutlarıyla, 
+    etkin şekilde oluşturmamıza izin verirler.
 
-    * `indirection` - Putting instances on the heap gives us a level of
-    indirection that allow us to not have to worry about the size of the actual
-    type and just store a pointer to it. There are other ways as well!
-- title: Generic Functions
+    * `Dolaylama` -  Her ne kadar dolaylamanın başka yolları olsa da, örneği öbek üzerine konumlandırmak ve bu örneğe yalnızca bir işaretçi depolamak, 
+    tür boyutu hakkında güvenebileceğimiz bir dolaylılık düzeyi sağlar.
+- title: Genel İşlevler
   code: >-
-    https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&code=struct%20SeaCreature%20%7B%0A%20%20%20%20pub%20name%3A%20String%2C%0A%20%20%20%20noise%3A%20String%2C%0A%7D%0A%0Aimpl%20SeaCreature%20%7B%0A%20%20%20%20pub%20fn%20get_sound(%26self)%20-%3E%20%26str%20%7B%0A%20%20%20%20%20%20%20%20%26self.noise%0A%20%20%20%20%7D%0A%7D%0A%0Atrait%20NoiseMaker%20%7B%0A%20%20%20%20fn%20make_noise(%26self)%3B%0A%7D%0A%0Aimpl%20NoiseMaker%20for%20SeaCreature%20%7B%0A%20%20%20%20fn%20make_noise(%26self)%20%7B%0A%20%20%20%20%20%20%20%20println!(%22%7B%7D%22%2C%20%26self.get_sound())%3B%0A%20%20%20%20%7D%0A%7D%0A%0Afn%20generic_make_noise%3CT%3E(creature%3A%20%26T)%0Awhere%0A%20%20%20%20T%3A%20NoiseMaker%2C%0A%7B%0A%20%20%20%20%2F%2F%20we%20know%20the%20real%20type%20at%20compile-time%0A%20%20%20%20creature.make_noise()%3B%0A%7D%0A%0Afn%20main()%20%7B%0A%20%20%20%20let%20creature%20%3D%20SeaCreature%20%7B%0A%20%20%20%20%20%20%20%20name%3A%20String%3A%3Afrom(%22Ferris%22)%2C%0A%20%20%20%20%20%20%20%20noise%3A%20String%3A%3Afrom(%22blub%22)%2C%0A%20%20%20%20%7D%3B%0A%20%20%20%20generic_make_noise(%26creature)%3B%0A%7D%0A
+    https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=745f3d602be54c4a9bc738f15af487ac
   content_markdown: >
-    Generics in Rust work hand in hand with traits. When we describe a
-    parameterized type `T` we can constrain what types 
-
-    can be used as an argument by listing what required traits the argument must
-    implement.
+    Rust'ta özellikler ve genel türler birbirleriyle uyum içinde çalışırlar. Bir `T` türünü parametrelerle ifade etmeye çalıştığımızda, 
+    argüman olarak hangi türlerin kullanılabileceğini ve argümanın uygulaması gereken özellikleri sınırlayabiliriz. Böyle bir durumda, `where` 
+    anahtar sözcüğü argümanın uygulaması gereken özellikleri listeler.
 
 
-    In this example type `T` must implement trait `Foo`:
+    Aşağıdaki örnekte yer alan `T` türü, `Tur` özelliğini uygulamak zorundadır:
 
     ```rust
 
-    fn my_function<T>(foo: T)
+    fn bir_islev<T>(tur: T)
 
     where
-        T:Foo
+        T:Tur
     {
         ...
     }
@@ -207,111 +187,87 @@
     ```
 
 
-    By using generics we create static typed functions at compile time that will
-    have known types and sizes, allowing us to
-
-    perform static dispatch and store as a sized value.
-- title: Generic Function Shorthand
+    Genel türler kullanarak hem türü hem de boyutu bilinen ve derleme zamanında statik yazılmış gibi değerlendirilecek işlevler oluşturabilir, 
+    bunları statik iletim yoluyla, boyutları belirgin değerler olarak saklayabiliriz.
+- title: Genel İşlev Kısaltmaları
   code: >-
-    https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&code=struct%20SeaCreature%20%7B%0A%20%20%20%20pub%20name%3A%20String%2C%0A%20%20%20%20noise%3A%20String%2C%0A%7D%0A%0Aimpl%20SeaCreature%20%7B%0A%20%20%20%20pub%20fn%20get_sound(%26self)%20-%3E%20%26str%20%7B%0A%20%20%20%20%20%20%20%20%26self.noise%0A%20%20%20%20%7D%0A%7D%0A%0Atrait%20NoiseMaker%20%7B%0A%20%20%20%20fn%20make_noise(%26self)%3B%0A%7D%0A%0Aimpl%20NoiseMaker%20for%20SeaCreature%20%7B%0A%20%20%20%20fn%20make_noise(%26self)%20%7B%0A%20%20%20%20%20%20%20%20println!(%22%7B%7D%22%2C%20%26self.get_sound())%3B%0A%20%20%20%20%7D%0A%7D%0A%0Afn%20generic_make_noise(creature%3A%20%26impl%20NoiseMaker)%0A%7B%0A%20%20%20%20%2F%2F%20we%20know%20the%20real%20type%20at%20compile-time%0A%20%20%20%20creature.make_noise()%3B%0A%7D%0A%0Afn%20main()%20%7B%0A%20%20%20%20let%20creature%20%3D%20SeaCreature%20%7B%0A%20%20%20%20%20%20%20%20name%3A%20String%3A%3Afrom(%22Ferris%22)%2C%0A%20%20%20%20%20%20%20%20noise%3A%20String%3A%3Afrom(%22blub%22)%2C%0A%20%20%20%20%7D%3B%0A%20%20%20%20generic_make_noise(%26creature)%3B%0A%7D%0A
+    https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=b9eb9414f0d4f76d360d04a6066419d6
   content_markdown: |
-    Rust has a shorthand for expressing generics constrained by a trait:
+    Bir özellik tarafından kısıtlanmış genel türleri kısaltmalar kullanarak bildirebilirsiniz:
 
     ```rust
-    fn my_function(foo: impl Foo) {
+    fn bir_islev(tur: impl Tur) {
         ...
     }
     ```
 
-    This is equivalent to writing:
+    Yukarıdaki ifadenin eşdeğeridir:
 
     ```rust
-    fn my_function<T>(foo: T)
+    fn bir_islev<T>(tur: T)
     where
-        T:Foo
+        T:Tur
     {
         ...
     }
     ```
 - title: Box
   code: >-
-    https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&code=struct%20SeaCreature%20%7B%0A%20%20%20%20pub%20name%3A%20String%2C%0A%20%20%20%20noise%3A%20String%2C%0A%7D%0A%0Aimpl%20SeaCreature%20%7B%0A%20%20%20%20pub%20fn%20get_sound(%26self)%20-%3E%20%26str%20%7B%0A%20%20%20%20%20%20%20%20%26self.noise%0A%20%20%20%20%7D%0A%7D%0A%0Atrait%20NoiseMaker%20%7B%0A%20%20%20%20fn%20make_noise(%26self)%3B%0A%7D%0A%0Aimpl%20NoiseMaker%20for%20SeaCreature%20%7B%0A%20%20%20%20fn%20make_noise(%26self)%20%7B%0A%20%20%20%20%20%20%20%20println!(%22%7B%7D%22%2C%20%26self.get_sound())%3B%0A%20%20%20%20%7D%0A%7D%0A%0Astruct%20Ocean%20%7B%0A%20%20%20%20animals%3A%20Vec%3CBox%3Cdyn%20NoiseMaker%3E%3E%2C%0A%7D%0A%0Afn%20main()%20%7B%0A%20%20%20%20let%20ferris%20%3D%20SeaCreature%20%7B%0A%20%20%20%20%20%20%20%20name%3A%20String%3A%3Afrom(%22Ferris%22)%2C%0A%20%20%20%20%20%20%20%20noise%3A%20String%3A%3Afrom(%22blub%22)%2C%0A%20%20%20%20%7D%3B%0A%20%20%20%20let%20sarah%20%3D%20SeaCreature%20%7B%0A%20%20%20%20%20%20%20%20name%3A%20String%3A%3Afrom(%22Sarah%22)%2C%0A%20%20%20%20%20%20%20%20noise%3A%20String%3A%3Afrom(%22swish%22)%2C%0A%20%20%20%20%7D%3B%0A%20%20%20%20let%20ocean%20%3D%20Ocean%20%7B%0A%20%20%20%20%20%20%20%20animals%3A%20vec!%5BBox%3A%3Anew(ferris)%2C%20Box%3A%3Anew(sarah)%5D%2C%0A%20%20%20%20%7D%3B%0A%20%20%20%20for%20a%20in%20ocean.animals.iter()%20%7B%0A%20%20%20%20%20%20%20%20a.make_noise()%3B%0A%20%20%20%20%7D%0A%7D%0A
+    https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=4d7c906f8096fa453978c5eda475ea0e
   content_markdown: >
-    `Box` is a data structure that allows us to move our data from the stack to
-    the heap.
+    Dilimize **Kutu** olarak çevirebileceğimiz `Box`, verilerimizi belleğin yığın bölgesinden öbek bölgesine taşımamıza izin veren bir veri yapısı olup, 
+    öbek üzerinde tutulan verileri gösteren bir akıllı işaretçi olarak da bilinir.
 
 
-    `Box` is a struct known as a *smart pointer* that holds the pointer to our
-    data on the heap.
+    `Box` sadece bir işaretçi tuttuğundan, boyutu bilinen bir yapıdır ve genellikle alan boyutlarını bilen yapıya referans vermek amacıyla kullanılmaktadır.
 
 
-    Because `Box` is a struct with a known size (because it just holds a
-    pointer), it is 
-
-    often used as a way to store a reference to something in a struct that must
-    know the size 
-
-    of its fields.
-
-
-    `Box` is so common it can be used from anywhere:
+    `Box` Rust programlarında oldukça fazla tercih edilmekte ve neredeyse her yerde kullanılmaktadır:
 
 
     ```rust
 
-    Box::new(Foo { ... })
+    Box::new(Tur { ... })
 
     ```
-- title: Generic Structs Revisited
+- title: Genellenmiş Yapılara Yeniden Bakış
   content_markdown: >
-    Generic structs can also have their parameterized types constrained by
-    traits.
+    Genellenmiş bir yapının parametreleştirilmiş türleri de niteliklerine göre sınırlandırılmış olabilir.
 
 
     ```rust
 
-    struct MyStruct<T>
+     struct BirYapi<T>
 
     where
-        T: MyTrait
+        T: BirOzellik
     {
-        foo: T
+        tur: T
         ...
     }
 
     ```
 
 
-    Generic structs have their parameterized type in their implementation
-    blocks:
+    Genellenmiş yapıların uygulama bloklarında, kendi parametreleştirilmiş türleri bulunur:
 
 
     ```rust
 
-    impl<T> MyStruct<T> {
+    impl<T> BirYapi<T> {
         ...
     }
 
     ```
-- title: Chapter 7 - Conclusion
+- title: Bölüm 7 - Sonuç
   content_markdown: >
-    We now have more language features at hand to represent our ideas clearly! 
-
-    Rust abstractions might be simple but they are powerful enough to make
-
-    working with code a joy. In this chapter, we caught a glimpse of smart
-    pointers
-
-    with `Box`. In the next chapter we'll learn about how smart pointers can
-    help us with other
-
-    specialized memory situations.
+    Artık fikirlerimizi açık biçimde sunabileceğimiz daha fazla dil özelliğini öğrenmiş durumdayız! Rust'ın soyutlamaları basit görünmekle birlikte, 
+    kod yazmayı zevkli hale dönüştürecek kadar güçlü ve yeteneklidirler. Bu bölümde, `Box` ile giriş yaptığımız akıllı işaretçilerin, özel bellek 
+    yönetimi gerektiren hallerde nasıl yararlı olduklarına ise bir sonraki bölümde değineceğiz.
 
 
-    Resources:
+    Ek kaynaklar (İngilizce):
 
-    * [Video - Object-oriented Programming in 7
-    minutes](https://www.youtube.com/watch?v=pTB0EiLXUC8)
+    * [Video - 7 Dakikada nesne yönelimli programlama](https://www.youtube.com/watch?v=pTB0EiLXUC8)
 
-    * [Article - "The faster you unlearn OOP, the better for you and your
-    software"](https://dpc.pw/the-faster-you-unlearn-oop-the-better-for-you-and-your-software)
+    * [Makale - "Nesne yönelimli programlamayı ne kadar hızlı öğrenirseniz, siz ve yazılımlarınız için o kadar iyi olur."](https://dpc.pw/the-faster-you-unlearn-oop-the-better-for-you-and-your-software)
