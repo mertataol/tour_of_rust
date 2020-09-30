@@ -1,38 +1,34 @@
 - title: Bölüm 6 - Metin
   content_markdown: >
-    Artık Rust'ın belleği ele alış şeklini biraz da olsa anladığımıza göre, 
-    metinleri tartışmaya odaklanabiliriz. Rust diğer dillerde karşılaşmayabileceğiniz, 
-    uluslararası metin desteği ve bu desteğin bit düzeyi sorunlarıyla oldukça ilgili olduğundan, 
-    bu sorunların üstesinden gelebilen yetenekli araçlara sahiptir.
-- title: Dizge Değişmezleri
+    Artık Rust'un belleği ele alış şeklini biraz daha anladığımıza göre, metin işleme konusuna odaklanabiliriz. 
+    Rust diğer dillerde karşılaşmamış olabileceğiniz, uluslararası metin desteği ve bu desteğin bit düzeyi sorunlarıyla oldukça ilgili olduğundan, 
+    bit düzeyinişlemlerinde karşılaşılan sorunları özel olarak ele alan yetenekli araçlara sahiptir.
+- title: Dizgi Değişmezleri
   content_markdown: >
-    Dilimize **dizge değişmezleri** olarak çevirebileceğimiz *String literals* verileri daima Unicode standardıyla kodlanırlar.
+    Dilimize **dizgi değişmezleri** olarak çevirebileceğimiz *String literals* verileri, daima Unicode standardında kodlanırlar.
 
 
-    Ve bu değişmezlerin türü her zaman `&'static str` olup: 
+    Ve bu değişmezlerin türü her zaman `&'static str` şeklindedir: 
 
 
-    * Referans belirteci olan `&` ise bellekte bir yere atıfta bulunulduğu anlamına gelir ve `&mut` 
-    biçiminde kullanılmadığından derleyicinin değişiklik yapılmasına izin vermeyeceği anlamına gelir.
+    * Referans belirteci olan `&` ise bellekte bir yere atıfta bulunulduğu anlamına gelir ve `&mut` biçiminde kullanılmadığından, 
+    derleyicinin değişiklik yapılmasına izin vermeyeceğini göstermektedir.
 
-    * `'static` belirtecinin varlığı ise dizge verilerinin program sonlanana kadar yaşamlarını 
-    sürdüreceği ve asla düşürülmeyeceği anlamına gelmektedir.
+    * `'static` belirtecinin varlığı, dizgi verilerinin program sonlanana kadar yaşamlarını sürdüreceği ve asla düşürülmeyeceğini ifade eder.
 
-    * `str` belirtecinin varlığı ise, bu referansın daima **utf-8* olarak yorumlanabilecek 
-    bir bayt dizisine işaret ettiğini gösterir.
+    * `str` belirtecinin varlığı bize, bu referansın daima **utf-8** olarak yorumlanacak bir bayt dizisine işaret ettiğini gösterir.
 
 
     Bellek ayrıntıları:
 
-    * Rust derleyicisi dizge verilerini, çoğu durumda program belleğinin veri bölümüne yerleştirecektir.
+    * Rust derleyicisi çoğu durumda dizgi verilerini, belleğin veri bölümüne yerleştirecektir.
   code: >-
     https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=c442990b1b1213c80e80612379b48684
 - title: UTF-8 Nedir?
-  content_markdown: "Bilgisayarların ortaya çıkışının ilk dönemlerinde, karakterleri kodlamakta kullanılan ve\n1 baytlık bilgi ile sadece 256 karakterin temsil edilebildiği ASCII sistemi, teknoloji gelişip\nbilgiye erişim talebi arttıkça, daha fazla dilin temsil edilmesine ihtiyaç duyulduğundan yetersiz hale geldi. \n\nArdından gelen ve bir unicode standardı olan, 1-4 byte arası değişken karakter uzunluklarını destekleyen\n**utf-8** tanıtılarak, daha fazla karakterin temsil edilmesi sağlandı. \n\nDeğişken boyutlu karakterlerin avantajı, yaygın kullanılan ASCII karakterler tek 1 bayt ile temsil\nedildiklerinden, gereksiz baytların kullanılmasına ihtiyaç duymamalarıdır. \n\nAncak bunların dezavantajı, karakter aramanın, örneğin; `bir_metin[3]` dizgesinin 4. karakterini elde etmenin,\nartık basit bir indekslemeyle, yani **O(1)** sabit zamanda hızlı bir şekilde yapılamıyor olmasıdır.\nBununla birlikte, okunacak karakterden önceki karakterlerin değişken bir boyuta sahip olması ve bayt\ndizisindeki 4. karakterin bulunduğu konumu değiştirmesi de mümkündür. \n\nBu nedenle, Unicode karakterlerinin gerçekte nerede başladığını anlayabilmek için **utf-8** dizgesini,\nbayt dizisi boyunca yani **O(n)** doğrusal zamanda yinelememiz gerekir.\n\nFerris: \"Su altı arkadaşlarımın emojilerini temsil eden **utf-8** kodlamasına sahip olduğum için çok mutluyum!\"\n\n<span class=\"emoji\">\U0001F420\U0001F419\U0001F41F\U0001F42C\U0001F40B</span>\n"
+  content_markdown: "Bilgisayarların ortaya çıkışının ilk dönemlerinde, karakterleri kodlamakta kullanılan ve\n1 baytlık bilgi ile sadece 256 karakterin temsil edilebildiği ASCII sistemi, teknoloji gelişip\nbilgiye erişim talebi arttıkça, daha fazla dilin temsil edilmesine ihtiyaç duyulduğundan yetersiz hale geldi. \n\nArdından gelen ve bir unicode standardı olan, 1-4 byte arası değişken karakter uzunluklarını destekleyen\n**utf-8** tanıtılarak, daha fazla karakterin temsil edilmesi sağlandı. \n\nDeğişken boyutlu karakterlerin avantajı, yaygın kullanılan ASCII karakterler tek 1 bayt ile temsil\nedildiklerinden, gereksiz baytların kullanılmasına ihtiyaç duymamalarıdır. \n\nAncak bunların dezavantajı, karakter aramanın, örneğin; `bir_metin[3]` dizgisinin 4. karakterini elde etmenin,\nartık basit bir indekslemeyle, yani **O(1)** sabit zamanda hızlı bir şekilde yapılamıyor olmasıdır.\nBununla birlikte, okunacak karakterden önceki karakterlerin değişken bir boyuta sahip olması ve bayt\ndizisindeki 4. karakterin bulunduğu konumu değiştirmesi de mümkündür. \n\nBu nedenle, Unicode karakterlerinin gerçekte nerede başladığını anlayabilmek için **utf-8** dizgisini,\nbayt dizisi boyunca yani **O(n)** doğrusal zamanda yinelememiz gerekir.\n\nFerris: \"Su altı arkadaşlarımın emojilerini temsil eden **utf-8** kodlamasına sahip olduğum için çok mutluyum!\"\n\n<span class=\"emoji\">\U0001F420\U0001F419\U0001F41F\U0001F42C\U0001F40B</span>\n"
 - title: Kaçış Karakterleri
   content_markdown: >
-    Bazı karakterleri görsel olarak temsil etmek zor olduğundan onları gösterebilmek için, 
-    yerlerine **kaçış kodu** sembolleri koymamız gerekir.
+    Bazı karakterleri görsel olarak temsil etmek zor olduğundan, onları gösterebilmek için yerlerine **kaçış kodu** sembolleri koymamız gerekir.
 
 
     Rust, C tabanlı dillerde yaygın olarak kullanılan kaçış kodlarını destekler:
@@ -53,22 +49,22 @@
     Desteklenen kaçış karakterleri Listesinin tam hali [burada](https://doc.rust-lang.org/reference/tokens.html) yer almaktadır.
   code: >-
     https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=a4bba073637064c609545c3a234a9822
-- title: Çok Satırlı Dizge Değişmezleri
+- title: Çok Satırlı Dizgi Değişmezleri
   content_markdown: |
-    Rust'ta dizgelerin çok satırlı olduğu varsayılır. 
+    Rust'ta dizgilerin çok satırlı olduğu varsayılır. 
 
     Eğer metninize otomatik olarak yeni satırların eklenmesini istemiyorsanız, satır sonlarında `\` kullanmalısınız.
   code: >-
     https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=1fdd1435c912868d9e771231b7b7f304
-- title: Ham Dizge Değişmezleri
+- title: Ham Dizgi Değişmezleri
   content_markdown: >
-    Ham dizgeler, `r#"` ile başlayan ve `"#` ile biten karakter dizileri olup, içlerinde yer alan normal 
-    dizge değerlerine çift tırnak, eğik çizgi gibi karakterleri değişmez değerler olarak eklememizi sağlarlar. 
+    Ham dizgiler, `r#"` ile başlayan ve `"#` ile biten karakter dizileri olduklarından, içlerinde yer alan normal dizgi değerlerine çift tırnak, 
+    eğik çizgi gibi karakterleri, değişmez değerler olarak ekleyebilmemize izin verirler. 
   code: >-
     https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=9cc3d31412400f5a8527941033cfd887
-- title: Dizge Değişmezleri ve Dosyalar
+- title: Dosyadan Edinilen Dizgi Değişmezleri
   content_markdown: >
-    Yerel dosyanızdan büyük bir metni programınıza aktaracağınız zaman `include_str!` makrosunu kullanmaya çalışın:
+    Yerel dosyanızda bulunan büyükçe bir metni programınıza dahil etmek istediğinizde, `include_str!` makrosundan yararlanmaya çalışın:
 
 
     ```rust
@@ -76,106 +72,99 @@
     let 00_html = include_str!("00_en.html");
 
     ```
-- title: Dizge Dilimi
+- title: Dizgi Dilimleri
   content_markdown: >
-    Dizge dilimleri, bellekteki bayt dizisini gösteren bir referanslardır ve daima utf-8 olarak kodlanmış
-    geçerli karakterlerden oluşmalıdır. Bir karakter dizesinin bir kısmını veya tamamını ifade eder.
+    Dizgi dilimleri, bellekteki bayt dizisini gösteren birer referans olduklarından, daima utf-8 biçiminde kodlanmış geçerli karakterlerden oluşturulmalıdırlar. 
+    Bunlar, bir karakter dizgisinin bir bölümünü yahut tamamını ifade ederken kullanılırlar.
 
 
-    Aynı zamanda **alt dilim** olarak da adlandırılan, *bir `str` diliminin dizge dilimi* de utf-8 
-    olarak kodlanmış geçerli karakterlerden oluşmak zorundadır.
+    Aynı zamanda **alt dilim** olarak adlandırılan, *bir `str` dilimini gösteren başka dizgi dilimi* de utf-8 biçiminde kodlanmış 
+    geçerli karakterlerden oluşmak zorundadır.
 
 
     Yaygın olarak kullanılan `&str` yöntemleri:
 
-    * `len` metodu dizge değişmezinin uzunluğunu karakter sayısı olarak değil bayt cinsinden döndürür.
+    * `len` metodu, dizgi değişmezinin uzunluğunu karakter sayısı olarak değil bayt cinsinden döndürür.
 
-    *  dizgenin belirli bir örüntü ile başlayıp başlamadığını test etmek için `starts_with`/`ends_with` metodları kullanılır.
+    *  Dizginin belirli bir örüntü ile başlayıp başlamadığını test etmek için `starts_with`/`ends_with` metodları kullanılır.
 
-    * `is_empty` metodu, dizge sıfır uzunlukta ise **true** değer döndürür.
+    *  Dizgi uzunluğu sıfır bayta eşitse `is_empty` metodu, **true** değer döndürecektir.
 
-    * `find` metodu, metnin ilk konumunu gösteren bir `Option<usize>` türü döndürür.
+    *  `find` metodu kullanıldığında, metnin ilk konumunu gösteren bir `Option<usize>` türü döndürlür.
   code: >-
     https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=0ed5358169cb75d0b9c4c77df0f2f98f
 - title: Karakterler
   content_markdown: >
-    Rust, Unicode ile çalışmanın zorluklarından ötürü `UTF-8` bayt dizisini, `char` türünde 
-    karakterlerden oluşan bir vektör şeklinde elde etmenin yolunu sunar.
+    Rust, Unicode ile çalışmanın getirdiği zorluklardan dolayı, `UTF-8` bayt dizisini `char` türündeki karakterlerden oluşan,
+    vektörler şeklinde elde edip işlememize olanak sağlar.
 
 
-    `char` olarak temsil edilen her karakter 4 bayt uzunluğunda olduğundan, arama sırasında 
-    dizi içinde yer alan belirli bir karaktere ulaşmak kolaylaşır.
+    `char` olarak temsil edilen karakterlerin her biri 4 bayt uzunluğunda olduğundan, ait oldukları dizi arandığında belirli bir karaktere ulaşmak kolaylaşır.
   code: >-
     https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=c8474d2b77d63a000934a49a48ec1573
-- title: Dizge - String
+- title: String
   content_markdown: >
-    **String** yani dilimizdeki karşılığı ile dizge, belleğin öbek bölgesinde 
-    tutulan ve utf-8 baytlarından oluşan bir yapıdır.
+    **String** yani dilimizdeki karşılığı ile dizgi, belleğin öbek bölgesinde tutulan ve utf-8 baytlarından oluşan bir yapıyı temsil eder.
 
 
-    Verileri belleğin öbek bölgesinde tutulduğundan, dizge değişmezleriyle yapamayacağımız 
-    şekillerde genişletilip, değiştirilebilirler.
+    Sahip olduğu veriler belleğin öbek bölgesinde tutulduğundan, dizge değişmezleriyle olamayacak biçimde genişletilerek değiştirilebilirler.
 
 
-    Yaygın olarak kullanılan `String` yöntemleri:
+    Yaygın olarak kullanılan `String` yöntemlerini aşağıda yer almaktadır:
 
 
-    * Bir dizgenin sonuna daha fazla utf-8 baytı eklemek için`push_str` metodundan yararlanılır.
+    * Bir dizginin sonuna daha fazla utf-8 baytı eklemek için`push_str` yöntemi kullanılır.
 
-    * utf-8 bayt dizilerini bir başkasıyla değiştirmek için `replace` metodu kullanılır.
+    * UTF-8 bayt dizilerini bir başkasıyla değiştirmek için `replace` yönteminden faydalanılır.
 
-    * Büyük/Küçük harf dönüşümlerinde `to_lowercase`/`to_uppercase` metodları yardımcı olur.
+    * Büyük/Küçük harf dönüşümlerinde `to_lowercase`/`to_uppercase` metodları kullanılır.
 
-    * Boşlukları temizlemek için ise `trim` metodu oldukça faydalıdır.
+    * Boşluk temizleme işlemlerinde `trim` metodu oldukça kullanışlıdır.
 
 
-    Bir dizge düşürüldüğünde kendisine öbek üzerinde ayrılmış bulunan kaynaklar boşaltılır.
+    Bir `String` türü düşürüldüğünde kendisine öbek üzerinde ayrılmış bulunan kaynaklar boşaltılır.
 
-    `String` türü, kendisini `&str` ile genişleterek yine kendisini döndüren `+` işlecine sahiptir, 
-    ancak bu olanak beklentilerinizi karşılayacak kadar ergonomik olmayabilir.
+    `String` türü, kendisini `&str` ile genişleterek, yine kendisini döndüren `+` işlecine sahiptir. 
+    Ancak bu olanak beklentilerinizi karşılayacak kadar ergonomik olmayabilir.
   code: >-
     https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=ce67ae66a16211717fc0549065f55fee
-- title: Metinlerin İşlev Parametrelerinde Kullanılması
+- title: İşlev Parametrelerinde Kullanılan Metinler
   content_markdown: >
-    Dizgeler ve dizge değişmezleri işlevlere genellikle bir dizge dilimi olarak iletilirler. Mülkiyetin 
-    devredilmesini gerektirmeyen pek çok senaryo için bu kullanım şekli oldukça fazla esneklik sağlar.
+    Dizgeler ve dizge değişmezleri genellikle işlevlere dizge dilimleri şeklinde iletilirler. Mülkiyetin devredilmesini gerektirmeyen 
+    pek çok senaryo için bu kullanım şekli yeterince esnektir.
   code: >-
     https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=debafe7a8927fce2be724bef8e7eccfc
-- title: Dizgeler Oluşturmak
+- title: Dizgiyi Oluşturmak
   content_markdown: |
-    String yapılarını oluşturmanın basit ama güçlü iki yolu `concat` ve `join` metodlarını kullanmaktır.
+    String, yani dizgi yapılarını oluşturmanın basit fakat etkili iki yolu, `concat` ve `join` metodlarını kullanmaktır.
   code: >-
     https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=2d77e85403d9d5cb780cb9c3356aa188
-- title: Dizgeleri Biçimlendirmek
+- title: Dizgileri Biçimlendirmek
   content_markdown: >
-   format! makrosu karakter dizgelerini, `format!("buraya {} gelecek", deger);` 
-   örneğine benzer biçimde, belirli değerlerle yer değiştirecek parametreleştirilmiş yer 
-   tutuculara sahip bir dizge tanımlayarak oluşturmamıza olanak sağlar.
+    Karakter dizgelerini `format!` makrosu kullanarak, format!("buraya {} gelecek", deger); örneğindeki gibi biçimlendirebiliriz. 
+   
+    Tıpkı println! makrosu gibi, format! makrosu da, parametreleştirilmiş dizgiler kullandığından, tanımı içinde belirli değerlerle değiştirilmek 
+    üzere bulundurulan yer tutuculara sahiptir.
 
 
-    Tıpkı `println!` makrosu gibi `format!` makrosunda da, parametreli dizgeler kullanılır!
-
-
-    Bu makronun sunduğu olanaklar, mütevazı **Rust Turu** notlarına sığdırılamayacak kadar geniş olduğundan, 
-    daha fazlasını öğrenmek için, [burada bulunan belgeleri](https://doc.rust-lang.org/std/fmt/) inceleyebilirsiniz.
+    Bu makronun sunduğu olanaklar, mütevazı **Rust Turu** notlarına sığdırılamayacak kadar geniş olduğundan, daha fazlasını öğrenebilmek için, 
+    [burada bulunan belgeleri](https://doc.rust-lang.org/std/fmt/) inceleyebilirsiniz.
   code: >-
     https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=260edbae6d54a7250270903a87a24030
-- title: Dizgeleri Dönüştürmek
+- title: Dizgileri Dönüştürmek
   content_markdown: |
     Birçok tür `to_string` metodu kullanılarak dizgelere dönüştürülebilir.
 
-    Jenerik yapıda bir ayrıştırma metodu olan `parse`, bir dizge yapısını veya bir karakter dizgesini, 
-    başka bir türe dönüştürmek için oldukça kullanışlıdır. Bununla birlikte `parse` metodu başarısız 
-    olma ihtimaline karşı bir `Result` türü döndürür.
+    Genellenmiş türlerin ayrıştırılmasında kullanılan `parse` yöntemi, bir dizge yapısını veya bir karakter dizgesini, başka bir türe dönüştürmek 
+    için oldukça kullanışlıdır. Bu yöntem başarısız olma ihtimaline karşın `Result` türü döndürür.
   code: >-
     https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=b965cab97a71b98543a9e325397d8798
 - title: Bölüm 6 - Sonuç
   content_markdown: >
-    Artık Rust'ın metin işleme yöntemleri konusunda bilmeniz gereken şeylerin çoğunu biliyorsunuz! 
-    Unicode ile metin işlemlemleri kod yazma sürecimizi zorlaştırıyor olsa da, standart kitaplık 
-    yönetilmesi kolay birçok işleve ev sahipliği yapar.  
+    Artık Rust'un metin işleme yöntemleri konusunda bilmeniz gereken şeylerin çoğunu öğrenmiş bulunuyorsunuz! 
+    Her ne kadar Unicode standartları ile metin işlemlemleri kod yazma sürecimizi zorlaştırıyor olsa da, Rust'un standart 
+    kütüphanesinde yönetilmesi kolay çok sayıda kullanışlı işlev yer alır.  
 
 
-    Şimdiye kadar, Rust'a prosedürel programlama yani işlev ve veri odaklı programlama paradigması 
-    merceğinden baktık, ancak gelecek bölümlerde Rust'ın nesne yönelimli programlama paradigmasının 
-    ortaya çıkardığı özellikler ve yetenekler hakkında konuşmaya başlayacağız.
+    Şu ana kadar Rust diline prosedürel, yani işlev ve veri odaklı programlama açısından yaklaştık. İlerleyen bölümlerimizde,
+    Rust'un nesne yönelimli programlama değerlerinin ortaya çıkardığı özellik ve yetenekler hakkında konuşmaya başlayacağız.
