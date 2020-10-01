@@ -1,10 +1,10 @@
-- title: The End
+- title: Bitti
   content_markdown: >
-    It's been a joy to have you on the Tour of Rust. Ferris and the Tour of Rust
-    team sincerely hope you enjoy the journey ahead! If you 
+    Rust Turu'nda sizi görmek benim için büyük bir zevkti. Ben Ferris ve Rust Turundaki ekip arkadaşlarım, Rust öğreniminize devam edebilmeniz için 
+    aşağıdaki kaynakları incelemenizi tavsiye ederken, önünüzdeki yolculuktan keyif almanızı içtenlikle umuyor ve başarılar diliyoruz.
 
-    have felt comfortable this far, we strongly recommend diving deeper with
-    these resources:
-
-    * [The Official Rust Programming
-    Book](https://doc.rust-lang.org/stable/book/)
+    * [Rust Programlama Dili Kitabı -Türkçe](https://rustdili.github.io/)
+    
+    * [The Official Rust Programming Book](https://doc.rust-lang.org/stable/book/)
+    
+    * [Rust Programlama Dili Bilgi Belge Havuzu](https://github.com/RustDili/dokuman)
