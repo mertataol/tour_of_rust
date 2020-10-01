@@ -14,7 +14,7 @@
     Bununla birlikte bazı durumlarda, tür çıkarsama işlemi karmaşaya neden olabileceğinden, türün açıkça bildirilmesi gerekebilir. 
     Bu gibi durumlarda bir yengecin en iyi arkadaşı olan ve benim de çok sevdiğim, `turbofish` adıyla bilinen `::<T>` işlecini kullanabilirsiniz.
   code: >-
-    https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=e44e412895772e08f12871e1270c9e31
+    https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=34b3b80e42200b1b8ac78fd48953e4b0
 - title: Boş Değer Gösterimi
   content_markdown: >
     Pek çok programlama dilinde `null` anahtar sözcüğü, değer yokluğunun temsilinde kullanılır. Bu değerin varlık ya da yokluğunun denetlenmememesi, 
@@ -44,7 +44,7 @@
 
     Yaygın olarak kullanılan bu türün örnekleri, `Some` ve `None` varyantlarının bir araya getirilmesiyle oluşturulur.
   code: >-
-    https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=0ae77577b8a9f15125029127d9584d66
+    https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=9f2adf5110ed3c07cee885b23ae43ac4
 - title: Result
   content_markdown: >
     Rust, yerleşik olarak gelen ve kodun başarısız olması durumunda değer döndürmemize izin veren, `Result` adında genellenmiş 
@@ -64,12 +64,12 @@
 
     Sıklıkla kullanılan `Result` türü örneklerini, dilediğiniz yer ve zamanda `Ok` ve `Err` varyantlarını belirterek oluşturulabilirsiniz.
   code: >-
-    https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=37d20e2176db59ae5783b89bd38d52d7
+    https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=bd84e6a7e499eeed58b552fa6a01c46a
 - title: Main İşlevinden Hata Döndürmek
   content_markdown: |
     Programlarımızın giriş noktası olan `main` işlevi, `Result` türü varyantlarına sarılı değerleri elde etme yeteneğine sahiptir!
   code: >-
-    https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=2943c07fa344de6126486e7baf100eec
+    https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=3e94d4f7ce2eb234f26196dc2a319192
 - title: Hataları Zarif Şekilde İşlemek
   content_markdown: >
     `Result` türü o kadar yaygın kullanılmaktadır ki, Rust kendisiyle çalışabilmek için güçlü bir `?` işleci sunar. 
