@@ -1,4 +1,4 @@
-- title: Bölüm 6 - Metin
+- title: Bölüm 6 - Metin Verileriyle Çalışmak
   content_markdown: >
     Artık Rust'un belleği ele alış şeklini biraz daha anladığımıza göre, metin işleme konusuna odaklanabiliriz. 
     Rust diğer dillerde karşılaşmamış olabileceğiniz, uluslararası metin desteği ve bu desteğin bit düzeyi sorunlarıyla oldukça ilgili olduğundan, 
