@@ -114,110 +114,72 @@
 
     Bu açıklamadan hareketle akıllı işaretçiler için, "bir yapıya `*` ve `.` işleçleri kullanılarak başvurulduğunda, olacakların mantığını tanımlamak 
     amacıyla `Deref`, `DerefMut` ve `Drop` özelliklerini uygulayan yapılar" diyebiliriz.
-- title: Smart Unsafe Code
+- title: Akıllı Güvensiz Kodlar
   code: >-
-    https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&code=fn%20main()%20%7B%0A%20%20%20%20let%20a%3A%20%5Bu8%3B%204%5D%20%3D%20%5B86%2C%2014%2C%2073%2C%2064%5D%3B%0A%20%20%20%20%2F%2F%20this%20is%20a%20raw%20pointer.%20Getting%20the%20memory%20address%0A%20%20%20%20%2F%2F%20of%20something%20as%20a%20number%20is%20totally%20safe%0A%20%20%20%20let%20pointer_a%20%3D%20%26a%20as%20*const%20u8%20as%20usize%3B%0A%20%20%20%20println!(%22Data%20memory%20location%3A%20%7B%7D%22%2C%20pointer_a)%3B%0A%20%20%20%20%2F%2F%20Turning%20our%20number%20into%20a%20raw%20pointer%20to%20a%20f32%20is%0A%20%20%20%20%2F%2F%20also%20safe%20to%20do.%0A%20%20%20%20let%20pointer_b%20%3D%20pointer_a%20as%20*const%20f32%3B%0A%20%20%20%20let%20b%20%3D%20unsafe%20%7B%0A%20%20%20%20%20%20%20%20%2F%2F%20This%20is%20unsafe%20because%20we%20are%20telling%20the%20compiler%0A%20%20%20%20%20%20%20%20%2F%2F%20to%20assume%20our%20pointer%20is%20a%20valid%20f32%20and%0A%20%20%20%20%20%20%20%20%2F%2F%20dereference%20it's%20value%20into%20the%20variable%20b.%0A%20%20%20%20%20%20%20%20%2F%2F%20Rust%20has%20no%20way%20to%20verify%20this%20assumption%20is%20true.%0A%20%20%20%20%20%20%20%20*pointer_b%0A%20%20%20%20%7D%3B%0A%20%20%20%20println!(%22I%20swear%20this%20is%20a%20pie!%20%7B%7D%22%2C%20b)%3B%0A%7D%0A
+    https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=18313307e42ea7f2bae1b1ea2b817cb9
   content_markdown: >
-    Smart pointers tend to use *unsafe* code fairly often. As mentioned
-    earlier, 
-
-    they are common tools for interacting with the lowest levels of memory in
-    Rust.
+    Rust'ta düşük bellek seviyeleriyle etkileşebilmek için çoğunlula güvenli olmayan kod bloklarından yararlanıldığından, akıllı işaretçiler bu kodları 
+    sıklıkla kullanırlar.
 
 
-    What is unsafe code? Unsafe code behaves exactly like normal Rust with the
-    exception of a few abilities that
-
-    the Rust compiler is unable to make guarantees about.
+    Daha önce de kabaca değindiğimiz güvenli olmayan kodlar, derleyicinin garanti edemediği birkaç özellik dışında, tam olarak normal Rust kodu gibi davranırlar.
 
 
-    A primary ability of unsafe code is *dereferencing a raw pointer*. That
-    means taking a *raw pointer* 
-
-    to a position in memory and declaring "a data structure exists here!" and
-    turning it into a representation of data you can use (i.e. `*const u8` into
-    `u8`). 
-
-    Rust has no way to keep track of the meaning of every byte that gets written
-    to memory. Because Rust can't make 
-
-    guarantees about what exists at an arbitrary number used as a *raw pointer*,
-    it puts the dereference in an `unsafe { ... }` block. 
+    Güvenli olmayan kodun ana özelliği, **bir ham işaretçinin referansını kaldırmak**tır. Bu, ham işaretçiyi bir bellek konumuna götürerek: "Burada bir 
+    veri yapısı var." şeklinde bildirim almak ve bu veriyi, örneğin `u8` için `*const u8` olarak kullanabileceğimiz başka bir veri türü temsiline
+    dönüştürmek demektir. 
+    Rust'ta, belleğe yazılan her baytın anlamını takip etmenin bir yolu olmadığından ve Rust, ham işaretçi olarak kullanılan rasgele bir sayının arkasında
+    tam olarak neyin bulunduğunu garanti edemediğinden, bu referansın güvensiz olarak işaretlenmiş bir `unsafe {...}` bloğunun içine konulmasını bekler. 
 
 
-    Smart pointers *dereference raw pointers* extensively, but they are well
-    proven in what they do.
-- title: Familiar Friends
+    Akıllı işaretçiler ham işaretçi referanslarını büyük ölçüde kaldırmalarına rağmen, yaptıkları işleri başarıyla sonuçlandırırlar.
+- title: Yakın Arkadaşlarımız
   code: >-
-    https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&code=use%20std%3A%3Aalloc%3A%3A%7Balloc%2C%20Layout%7D%3B%0Ause%20std%3A%3Aops%3A%3ADeref%3B%0A%0Astruct%20Pie%20%7B%0A%20%20%20%20secret_recipe%3A%20usize%2C%0A%7D%0A%0Aimpl%20Pie%20%7B%0A%20%20%20%20fn%20new()%20-%3E%20Self%20%7B%0A%20%20%20%20%20%20%20%20%2F%2F%20let's%20ask%20for%204%20bytes%0A%20%20%20%20%20%20%20%20let%20layout%20%3D%20Layout%3A%3Afrom_size_align(4%2C%201).unwrap()%3B%0A%0A%20%20%20%20%20%20%20%20unsafe%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%2F%2F%20allocate%20and%20save%20the%20memory%20location%20as%20a%20number%0A%20%20%20%20%20%20%20%20%20%20%20%20let%20ptr%20%3D%20alloc(layout)%20as%20*mut%20u8%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%2F%2F%20use%20pointer%20math%20and%20write%20a%20few%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%2F%2F%20u8%20values%20to%20memory%0A%20%20%20%20%20%20%20%20%20%20%20%20ptr.write(86)%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20ptr.add(1).write(14)%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20ptr.add(2).write(73)%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20ptr.add(3).write(64)%3B%0A%0A%20%20%20%20%20%20%20%20%20%20%20%20Pie%20%7B%20secret_recipe%3A%20ptr%20as%20usize%20%7D%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%7D%0Aimpl%20Deref%20for%20Pie%20%7B%0A%20%20%20%20type%20Target%20%3D%20f32%3B%0A%20%20%20%20fn%20deref(%26self)%20-%3E%20%26f32%20%7B%0A%20%20%20%20%20%20%20%20%2F%2F%20interpret%20secret_recipe%20pointer%20as%20a%20f32%20raw%20pointer%0A%20%20%20%20%20%20%20%20let%20pointer%20%3D%20self.secret_recipe%20as%20*const%20f32%3B%0A%20%20%20%20%20%20%20%20%2F%2F%20dereference%20it%20into%20a%20return%20value%20%26f32%0A%20%20%20%20%20%20%20%20unsafe%20%7B%20%26*pointer%20%7D%0A%20%20%20%20%7D%0A%7D%0Afn%20main()%20%7B%0A%20%20%20%20let%20p%20%3D%20Pie%3A%3Anew()%3B%0A%20%20%20%20%2F%2F%20%22make%20a%20pie%22%20by%20dereferencing%20our%20%0A%20%20%20%20%2F%2F%20Pie%20struct%20smart%20pointer%0A%20%20%20%20println!(%22%7B%3A%3F%7D%22%2C%20*p)%3B%0A%7D%0A
+    https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=9de516c1300ab3e7f15bd738614e9935
   content_markdown: >
-    Consider some smart pointers we've already seen like `Vec<T>` and `String`.
+    Zaten daha önce tanışmış olduğumuz `Vec<T>` ve `String` gibi akıllı işaretçilere bir kez daha bakalım.
 
 
-    `Vec<T>` is a smart pointer that just owns some memory region of bytes. The
-    Rust compiler has no idea what 
-
-    exists in these bytes. The smart pointer interprets what it means to grab
-    items from the region of memory it manages,
-
-    keeps track of where data structures within those bytes begin and end, and
-    then finally dereferences a raw pointer
-
-    into data structures into a nice clean ergonomic interface for us to use
-    (e.g. `my_vec[3]`).
+    Bellek üzerindeki bazı baytlara sahip olan `Vec<T>` akıllı bir işaretçi olmasına rağmen, derleyicinin bu baytlarda ne olduğuna dair en ufak 
+    bir fikri yoktur. Yönettiği bellek bölgesinden öğe elde etmenin anlamını yorumlayan akıllı işaretçi, bu baytlarda bulunan veri yapısının 
+    nerede başlayıp bittiğini takip edip, ham işaretçiyi **bir_vektor[3]** benzeri, kullanıcı dostu, hoş ve temiz bir arayüzle kullanıbilecek 
+    şekilde veri yapılarına aktarır.
 
 
-    Similarly, `String` keeps track of a memory region of bytes, and
-    programmatically restricts content written to it to always
-
-    be valid `utf-8` and helps dereference that memory region into a type
-    `&str`.
+    Benzer şekilde `String` türü de bellek bölgesindeki baytları izleyerek, kendisine yazılan içeriğin daima geçerli `utf-8` olmasını sağlar. 
+    Ve bu bellek bölgesinin `&str` türü içine aktarılmasına yardımcı olur.
 
 
-    Both these datastructures use unsafe dereferencing of raw pointers to do
-    their job.
+    Bu veri yapılarının her ikisi de işlerini gerçekleştirebilmek için, ham işaretçilerin referanslarına güvensiz kodlar aracılığıyla ulaşmaya çalışır.
 
 
-    Memory details:
+    Bellek ayrıntıları:
 
-    * Rust has an equivalent of C's `malloc` using
-    [alloc](https://doc.rust-lang.org/std/alloc/fn.alloc.html) and
-    [Layout](https://doc.rust-lang.org/std/alloc/struct.Layout.html ) for
-    getting ahold of your own memory regions to manage.
-- title: Heap Allocated Memory
+    * Rust C'deki `malloc` eş değerinde ve yönetilebilir bellek bölgelerini kullanımımıza sunan, [alloc](https://doc.rust-lang.org/std/alloc/fn.alloc.html) 
+    ve [Layout](https://doc.rust-lang.org/std/alloc/struct.Layout.html) özelliklerine sahiptir.
+- title: Öbek Üzerinde Bellek Ayırmak
   code: >-
-    https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&code=struct%20Pie%3B%0A%0Aimpl%20Pie%20%7B%0A%20%20%20%20fn%20eat(%26self)%20%7B%0A%20%20%20%20%20%20%20%20println!(%22tastes%20better%20on%20the%20heap!%22)%0A%20%20%20%20%7D%0A%7D%0A%0Afn%20main()%20%7B%0A%20%20%20%20let%20heap_pie%20%3D%20Box%3A%3Anew(Pie)%3B%0A%20%20%20%20heap_pie.eat()%3B%0A%7D%0A
+    https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=eac030d1b90f587706af4bdf8d7aedbb
   content_markdown: >
-    `Box` is a smart pointer that lets us move data from the stack to the heap.
+    `Box` verilerimizin, yığın bölgesinden öbek bölgesine taşınmasını sağlayan, bir **akıllı işaretçi**dir.
 
 
-    Dereferencing it lets us use the heap allocated data ergonomically as if it
-    were the original type.
-- title: Failable Main Revisited
+    Box'a ait referansın kaldırılması, öbek bölgesinde konumlandırılan verilerin, tıpkı orijinal türlermiş gibi ergonomik biçimde kullanılmasını sağlar.
+- title: Main İşlevine Yeniden Bakış
   code: >-
-    https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&code=use%20core%3A%3Afmt%3A%3ADisplay%3B%0Ause%20std%3A%3Aerror%3A%3AError%3B%0A%0Astruct%20Pie%3B%0A%0A%23%5Bderive(Debug)%5D%0Astruct%20NotFreshError%3B%0A%0Aimpl%20Display%20for%20NotFreshError%20%7B%0A%20%20%20%20fn%20fmt(%26self%2C%20f%3A%20%26mut%20std%3A%3Afmt%3A%3AFormatter%3C'_%3E)%20-%3E%20std%3A%3Afmt%3A%3AResult%20%7B%0A%20%20%20%20%20%20%20%20write!(f%2C%20%22This%20pie%20is%20not%20fresh!%22)%0A%20%20%20%20%7D%0A%7D%0A%0Aimpl%20Error%20for%20NotFreshError%20%7B%7D%0A%0Aimpl%20Pie%20%7B%0A%20%20%20%20fn%20eat(%26self)%20-%3E%20Result%3C()%2C%20Box%3Cdyn%20Error%3E%3E%20%7B%0A%20%20%20%20%20%20%20%20Err(Box%3A%3Anew(NotFreshError))%0A%20%20%20%20%7D%0A%7D%0A%0Afn%20main()%20-%3E%20Result%3C()%2C%20Box%3Cdyn%20Error%3E%3E%20%7B%0A%20%20%20%20let%20heap_pie%20%3D%20Box%3A%3Anew(Pie)%3B%0A%20%20%20%20heap_pie.eat()%3F%3B%0A%20%20%20%20Ok(())%0A%7D%0A
+    https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=d9349e34ecb0733011df67022e33da1f
   content_markdown: >
-    Rust code may have a plethora of representations of errors, but the standard
-    library has
-
-    a universal trait `std::error::Error` for describing errors.
+    Rust bize hataları işleyebilmemiz için çok sayıda olanak sunar. Standart kitaplık tarafından sağlanan ve hataları evrensel düzeyde ele almamızı 
+    sağlayan `std::error::Error` özelliği de bunlardan biridir.
 
 
-    Using a smart pointer `Box` we can use the type `Box<dyn std::error::Error>`
-    as a common type for returning errors because it allows us to
-
-    propagate up an error on the heap and interact with it at a high level
-    without having to know a specific type.
+    Hata döndürmek için `Box` akıllı işaretçisinden yararlanmak ve onu ortak genel tür olarak `Box<dyn std::error::Error>` şeklinde kullanmak, 
+    öbek üzerindeki hatayı belirli bir tür bildirmeksizin yaymamıza ve bu hatayla yüksek düzeyde etkileşim kurmamıza olanak sağlar.
 
 
-    Early in Tour of Rust we learned that `main` can return an error. We can now
-    return
-
-    a type capable of describing almost any kind of error that might occur in
-    our program 
-
-    so long as the error's data structure implements Rust's common `Error`
-    trait.
+    Turumuzun ilk bölümlerinde Rust'un main işlevinin hata döndürebileceğini öğrenmiştik. Buna ek olarak yine main işlevinden, hatanın temsil 
+    edildiği veri yapısı Rust'un ortak `Error` özelliğini uyguladığı sürece, bir programda meydana gelebilecek her türlü hatayı tanımlayabilen 
+    bir tür döndürebiliriz.
 
 
     ```rust
@@ -225,108 +187,70 @@
     fn main() -> Result<(), Box<dyn std::error:Error>>
 
     ```
-- title: Referencing Counting
+- title: Referans Sayımı
   code: >-
-    https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&code=use%20std%3A%3Arc%3A%3ARc%3B%0A%0Astruct%20Pie%3B%0A%0Aimpl%20Pie%20%7B%0A%20%20%20%20fn%20eat(%26self)%20%7B%0A%20%20%20%20%20%20%20%20println!(%22tastes%20better%20on%20the%20heap!%22)%0A%20%20%20%20%7D%0A%7D%0A%0Afn%20main()%20%7B%0A%20%20%20%20let%20heap_pie%20%3D%20Rc%3A%3Anew(Pie)%3B%0A%20%20%20%20let%20heap_pie2%20%3D%20heap_pie.clone()%3B%0A%20%20%20%20let%20heap_pie3%20%3D%20heap_pie2.clone()%3B%0A%0A%20%20%20%20heap_pie3.eat()%3B%0A%20%20%20%20heap_pie2.eat()%3B%0A%20%20%20%20heap_pie.eat()%3B%0A%0A%20%20%20%20%2F%2F%20all%20reference%20count%20smart%20pointers%20are%20dropped%20now%0A%20%20%20%20%2F%2F%20the%20heap%20data%20Pie%20finally%20deallocates%0A%7D%0A
+    https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=3e89c3f55853f8846252cdc5238dfe5f
   content_markdown: >
-    `Rc` is a smart pointer that moves data from the stack onto the heap. It
-    allows us to 
-
-    clone other `Rc` smart pointers that all have the ability to immutably
-    borrow the data 
-
-    that was put on the heap.
+    `Rc`, verileri yığından öbeğe taşıyan akıllı bir işaretçidir. Ve bu işaretçi gerektiğinde, öbek üzerinde bulunan verileri ödünç alma yeteneğine 
+    sahip, diğer `Rc` akıllı işaretçilerini klonlamamızı sağlar.
 
 
-    Only when the last smart pointer is dropped does the data on the heap become
-    deallocated.
-- title: Sharing Access
+    Öbek üzerindeki veriler, yalnızca son akıllı işaretçi düşürüldüğünde serbest bırakılır.
+- title: Erişim Paylaşımı
   code: >-
-    https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&code=use%20std%3A%3Acell%3A%3ARefCell%3B%0A%0Astruct%20Pie%20%7B%0A%20%20%20%20slices%3A%20u8%0A%7D%0A%0Aimpl%20Pie%20%7B%0A%20%20%20%20fn%20eat(%26mut%20self)%20%7B%0A%20%20%20%20%20%20%20%20println!(%22tastes%20better%20on%20the%20heap!%22)%3B%0A%20%20%20%20%20%20%20%20self.slices%20-%3D%201%3B%0A%20%20%20%20%7D%0A%7D%0A%0Afn%20main()%20%7B%0A%20%20%20%20%2F%2F%20RefCell%20validates%20memory%20safety%20at%20runtime%0A%20%20%20%20%2F%2F%20notice%3A%20pie_cell%20is%20not%20mut!%0A%20%20%20%20let%20pie_cell%20%3D%20RefCell%3A%3Anew(Pie%7Bslices%3A8%7D)%3B%0A%20%20%20%20%0A%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%2F%2F%20but%20we%20can%20borrow%20mutable%20references!%0A%20%20%20%20%20%20%20%20let%20mut%20mut_ref_pie%20%3D%20pie_cell.borrow_mut()%3B%0A%20%20%20%20%20%20%20%20mut_ref_pie.eat()%3B%0A%20%20%20%20%20%20%20%20mut_ref_pie.eat()%3B%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%2F%2F%20mut_ref_pie%20is%20dropped%20at%20end%20of%20scope%0A%20%20%20%20%7D%0A%20%20%20%20%0A%20%20%20%20%2F%2F%20now%20we%20can%20borrow%20immutably%20once%20our%20mutable%20reference%20drops%0A%20%20%20%20%20let%20ref_pie%20%3D%20pie_cell.borrow()%3B%0A%20%20%20%20%20println!(%22%7B%7D%20slices%20left%22%2Cref_pie.slices)%3B%0A%7D%0A
+    https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=64b154c2416cc74de20144cc8bec4d8e
   content_markdown: >
-    `RefCell` is a container data structure commonly held by smart pointers that
-    takes in data and lets us
-
-    borrow mutable and immutable references to what's inside. It prevents
-    borrowing from
-
-    being abused by enforcing Rust's memory safety rules at runtime when you ask
-    to borrow
-
-    the data within:
+    `RefCell`, kapsadığı verilere değişmez veya değişken referanslar ödünç almamızı sağlayan ve genellikle akıllı işaretçiler tarafından tutulan 
+    kapsayıcı bir veri yapsıdır. Bu veri yapısının biricik özelliği, bellekle ilgili güvenlik kurallarını çalışma zamanında uygulamak ve borçlanma
+    sisteminin kötüye kullanılmasını önlemektir. Bu yapıyla ilgili bilinmesi gereken tek kural aşağıda yer almaktadır:
 
 
-    **Only one mutable reference OR multiple immutable references, but not
-    both!**
+    **Ya sadece bir tane değişken referansınız, YA DA çok sayıda değişmez referansınız olabilir. İkisinin birden olmasına izin verilmez!**
 
 
-    If you violate these rules `RefCell` will panic.
-- title: Sharing Across Threads
+    Bu kuralın ihlali `RefCell` özelliğinin panik üretmesine ve programın durdurulmasına sebep olur.
+- title: İş Parçacıkları Arasında Paylaşım
   code: >-
-    https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&code=use%20std%3A%3Async%3A%3AMutex%3B%0A%0Astruct%20Pie%3B%0A%0Aimpl%20Pie%20%7B%0A%20%20%20%20fn%20eat(%26self)%20%7B%0A%20%20%20%20%20%20%20%20println!(%22only%20I%20eat%20the%20pie%20right%20now!%22)%3B%0A%20%20%20%20%7D%0A%7D%0A%0Afn%20main()%20%7B%0A%20%20%20%20let%20mutex_pie%20%3D%20Mutex%3A%3Anew(Pie)%3B%0A%20%20%20%20%2F%2F%20let's%20borrow%20a%20locked%20immutable%20reference%20of%20pie%0A%20%20%20%20%2F%2F%20we%20have%20to%20unwrap%20the%20result%20of%20a%20lock%0A%20%20%20%20%2F%2F%20because%20it%20might%20fail%0A%20%20%20%20let%20ref_pie%20%3D%20mutex_pie.lock().unwrap()%3B%0A%20%20%20%20ref_pie.eat()%3B%0A%20%20%20%20%2F%2F%20locked%20reference%20drops%20here%2C%20and%20mutex%20protected%20value%20can%20be%20used%20by%20someone%20else%0A%7D%0A
+    https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=dec224cf971fbcdce31f2e5274314bad
   content_markdown: >
-    `Mutex` is a container data structure commonly held by smart pointers that
-    takes in data and lets us borrow mutable
-
-    and immutable references to the data within. This prevents borrowing from
-    being abused by 
-
-    having the operating system restrict only one CPU thread at time to have
-    access to the data, 
-
-    blocking other threads until that original thread is done with its locked
-    borrow.
+    `Mutex`, kapsadığı verilere değişmez veya değişken referansları ödünç alabilmemizi sağlayan ve genellikle akıllı işaretçiler tarafından 
+    tutulan kapsayıcı bir veri yapsıdır. Mutex'in biricik özelliği, veri erişimini tek bir CPU iş parçacığıyla kısıtlayarak, asıl iş parçacığının 
+    çalışmasını beklemek, bu bekleme sırasında diğer iş parçacıklarını engellemek ve beklemenin sonunda verilere erişimin kilidini açmaktır.
 
 
-    Multithreading is beyond the scope of Tour of Rust, but `Mutex` is a
-    fundamental part of orchestrating
-
-    multiple CPU threads accessing the same data.
+    Eşzamanlılık konusu, bu turun kapsamı dışında kaldığından daha fazla detaya girmek yerine `Mutex`'in, aynı verilere erişen çok sayıda 
+    CPU iş parçacığını kontrol eden bir kilitleme düzeneği olduğunu bilmeniz şu an için yeterlidir.
 
 
-    There is a special smart pointer `Arc` which is identical to `Rc` except
-    uses thread-safe incrementing of reference counts. 
-
-    It's often used to have many references to the same `Mutex`.
-- title: Combining Smart Pointers
+    Referansların iş parçacığı açısından güvenli şekilde sayılması haricinde, `Rc` ile aynı özelliklere sahip `Arc` adında bir akıllı 
+    işaretçimiz daha vardır. Bu işaretçi genellikle aynı Mutex kilidine birden fazla referansla erişirken kullanılır. 
+- title: Akıllı İşaretçileri Bir Araya Getirmek
   code: >-
-    https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&code=use%20std%3A%3Acell%3A%3ARefCell%3B%0Ause%20std%3A%3Arc%3A%3ARc%3B%0A%0Astruct%20Pie%20%7B%0A%20%20%20%20slices%3A%20u8%2C%0A%7D%0A%0Aimpl%20Pie%20%7B%0A%20%20%20%20fn%20eat_slice(%26mut%20self%2C%20name%3A%20%26str)%20%7B%0A%20%20%20%20%20%20%20%20println!(%22%7B%7D%20took%20a%20slice!%22%2C%20name)%3B%0A%20%20%20%20%20%20%20%20self.slices%20-%3D%201%3B%0A%20%20%20%20%7D%0A%7D%0A%0Astruct%20SeaCreature%20%7B%0A%20%20%20%20name%3A%20String%2C%0A%20%20%20%20pie%3A%20Rc%3CRefCell%3CPie%3E%3E%2C%0A%7D%0A%0Aimpl%20SeaCreature%20%7B%0A%20%20%20%20fn%20eat(%26self)%20%7B%0A%20%20%20%20%20%20%20%20%2F%2F%20use%20smart%20pointer%20to%20pie%20for%20a%20mutable%20borrow%0A%20%20%20%20%20%20%20%20let%20mut%20p%20%3D%20self.pie.borrow_mut()%3B%0A%20%20%20%20%20%20%20%20%2F%2F%20take%20a%20bite!%0A%20%20%20%20%20%20%20%20p.eat_slice(%26self.name)%3B%0A%20%20%20%20%7D%0A%7D%0A%0Afn%20main()%20%7B%0A%20%20%20%20let%20pie%20%3D%20Rc%3A%3Anew(RefCell%3A%3Anew(Pie%20%7B%20slices%3A%208%20%7D))%3B%0A%20%20%20%20%2F%2F%20ferris%20and%20sarah%20are%20given%20clones%20of%20smart%20pointer%20to%20pie%0A%20%20%20%20let%20ferris%20%3D%20SeaCreature%20%7B%0A%20%20%20%20%20%20%20%20name%3A%20String%3A%3Afrom(%22ferris%22)%2C%0A%20%20%20%20%20%20%20%20pie%3A%20pie.clone()%2C%0A%20%20%20%20%7D%3B%0A%20%20%20%20let%20sarah%20%3D%20SeaCreature%20%7B%0A%20%20%20%20%20%20%20%20name%3A%20String%3A%3Afrom(%22sarah%22)%2C%0A%20%20%20%20%20%20%20%20pie%3A%20pie.clone()%2C%0A%20%20%20%20%7D%3B%0A%20%20%20%20ferris.eat()%3B%0A%20%20%20%20sarah.eat()%3B%0A%0A%20%20%20%20let%20p%20%3D%20pie.borrow()%3B%0A%20%20%20%20println!(%22%7B%7D%20slices%20left%22%2C%20p.slices)%3B%0A%7D%0A
+    https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=c90b8a42b1352703cfa329cad5f857fd
   content_markdown: >
-    Smart pointers might seem limited, but they can make some very powerful
-    combinations.
+    Akıllı işaretçiler sınırlıymış gibi görünmelerine rağmen, bazen çok güçlü kombinasyonlar oluşturabilirler.
 
 
-    `Rc<Vec<Foo>>` - Allow the cloning of multiple smart pointers that can
-    borrow the same vector of immutable data structures on the heap.
+    `Rc<Vec<Tur>>` - Öbek üzerinde bulunan değişmez veri yapısı vektörünü ödünç alan, birden çok akıllı işaretçinin klonlanmasına izin verir.
 
 
-    `Rc<RefCell<Foo>>` - Allow multiple smart pointers the ability to borrow
-    mutably/immutably the same struct `Foo`
+    `Rc<RefCell<Tur>>` - Birden fazla akıllı işaretçinin aynı `Tur` yapısını, değişken ya da değişmez olarak ödünç almasına izin verir.
 
 
-    `Arc<Mutex<Foo>>` - Allow multiple smart pointers the ability to lock
-    temporary mutable/immutable borrows in a CPU thread exclusive manner.
+    `Arc<Mutex<Tur>>` - Bir akıllı işaretçinin, değişken ya da değişmez olarak borç alınmış bir veriyi, yalnızca bir CPU iş parçacığına *ve diğer 
+    iş parçacıklarının erişimine müsaade etmeyecek şekilde* geçici olarak kilitlemesine izin verir.
 
 
-    Memory detail:
+    Bellek ayrıntıları:
 
-    * You'll notice a theme with many of these combinations. The use of a
-    immutable data type (possibly owned by multiple smart pointers) to modify
-    internal data. This 
-      is referred to as the "interior mutability" pattern in Rust. It is a pattern that lets us bend the rules of memory usage at runtime with the same level of safety as Rust's
-      compile-time checks.
+    * Bu kombinasyonların çoğu olasılıkla çok sayıda akıllı işaretçiye ait olan ve dahili verileri değiştirmek için değişmez bir veri türünü kullanan 
+    tek bir modeli takip eder. Rust'ın "dahili değişkenlik" olarak adlandırdığı bu model, çalışma zamanında bellek kullanım kurallarını atlamamıza 
+    izin verirken, Rust'un derleme zamanında bize verdiği güvenlik düzeyini de korumamıza yardımcı olur.
       
-- title: Chapter 8 - Conclusion
+- title: Bölüm 8 - Sonuç
   content_markdown: >
-    Smart pointers are the idioms of Rust programming and let us not have to
-    re-create the 
-
-    very common patterns of memory usage. With them you are ready to tackle the
-    toughest of
-
-    challenges! Now that we have the foundations of Rust, let's talk a bit about
-    how we make 
-
-    larger projects. In chapter 9 we break free of single page
-
-    lines of code.
+    Aslında birer Rust programlama dili deyimi olan ve oldukça sık kullanılan akıllı işaretçiler, bizleri yaygın bellek kullanım modellerini yeniden 
+    oluşturma zahmetinden kurtarmakla beraber, her türlü zorlukla yüzleşmeye hazır hale getirir. Artık Rust'un temellerini kavradığımıza göre daha 
+    büyük projelere yelken açabiliriz.
+    
+    Bir sonraki bölümde tek sayfalık kodlara veda edecek ve büyük projelerin nasıl oluşturulduğunu tartışacağız.
