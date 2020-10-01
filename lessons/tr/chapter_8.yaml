@@ -1,78 +1,61 @@
-- title: Chapter 8 - Smart Pointers
+- title: Bölüm 8 - Akıllı İşaretçiler
   content_markdown: >
-    In this chapter we will demystify smart pointers. Let's explore into
-
-    these data structures that let us interact with the lowest level of 
-
-    memory.
+    Bu bölümde düşük bellek seviyesiyle etkileşmemizi sağlayan akıllı işaretçileri inceleyecek ve onlara dair gizemleri birer birer çözeceğiz.
 
 
-    Ferris says: "Don't feel overwhelmed by this chapter if you don't feel 
-
-    you can write your own low level memory management code in one short read.
-    This chapter 
-
-    is mostly to introduce you to some useful tools and give a glimpse at how
-    they work!"
-- title: References Revisited
+    Ama başlamadan önce Ferris'in uyarısına kulak vermenin motivasyonumuzu güçlendireceğini düşünüyorum: “Bu bölüme göz gezdirirken, 
+    düşük seviyeli bellek yönetim kodlarını yazamayacağınızı düşünerek moralinizi bozmayın. Zira bu bölüm, bazı temel ve yararlı araçlara 
+    giriş niteliğinde olup, nasıl çalıştıkları hakkında sizi bilgilendirmeyi amaçlar!"
+- title: Referanslara Yeniden Bakış
   content_markdown: >
-    A reference is fundamentally just a number that is the start position
-
-    of some bytes in memory. Its only purpose is to represent the concept of 
-
-    where data of a specific type exists. What makes a reference different from
-    just a number is that Rust
-
-    will validate the lifetime of references doesn't last longer than what
-
-    it refers to (otherwise we'd get an error when we used it!).
-- title: Raw Pointers
+    Aslında referanslar, bellekteki bazı baytların başlangıç konumunu gösteren sayılardan ibarettir. Ve bu sayıların tek amacı, belirli türden verilerin 
+    belleğin neresinde bulunduğunu belirtmektir. Ancak Rust açısından referanslar, bir sayıdan daha fazla anlam taşırlar. Derleyici olası bir hatanın 
+    önüne geçmek için, referansın yaşam süresinin, başvurduğu nesne ömründen daha uzun olup olmadığını daima bilmek ister.
+- title: Ham İşaretçiler
   code: >-
-    https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&code=fn%20main()%20%7B%0A%20%20%20%20let%20a%20%3D%2042%3B%0A%20%20%20%20let%20memory_location%20%3D%20%26a%20as%20*const%20i32%20as%20usize%3B%0A%20%20%20%20println!(%22Data%20is%20here%20%7B%7D%22%2C%20memory_location)%3B%0A%7D%0A
+    https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=f98da87c2fe84aeb3436bb612d0d9d6d
   content_markdown: >
-    References can be converted into a more primitive type called a *raw
-    pointer*. Much like a number, it
-
-    can be copied and moved around with little restriction. Rust
-
-    makes no assurances of the validity of the memory location it points to.
+    Referanslar **ham işaretçi** adı verilen daha ilkel bir türe dönüştürülebilirler. Bu onların azıcık kısıtlama ile tıpkı bir sayıymış gibi 
+    kopyalanabilecekleri ve taşınabililecekleri anlamına gelmektedir. Bununla birlikte Rust bu dönüşüm işleminde, işaret edilen bellek konumunun 
+    geçerli olduğunu garantilemez.
 
 
-    Two kinds of raw pointers exist:
+    Rust'un iki türlü ham işareçisi vardır:
 
 
-    * `*const T` - A raw pointer to data of type T that should never change.
+    * `*const T` - Asla değişmemesi gereken **T** türündeki verilere yönelik ham işaretçi.
 
-    * `*mut T` - A raw pointer to data of type T that can change.
-
-
-    Raw pointers can be converted to and from numbers (e.g. `usize`).
+    * `*mut T` - Değişebilen **T** türündeki verilere yönelik ham işaretçi.
 
 
-    Raw pointers can access data with *unsafe* code (more on this later).
+    Ham işaretçiler `usize` gibi sayılara dönüştürülebildikleri gibi, bu tür sayılardan da dönüştürülebilirler.
 
 
-    Memory Details:
+    Bu tür işaretçiler, ayrıntılarına ileride değineceğimiz güvenli olmayan Rust kodları aracılığıyla verilere erişebilirler.
 
-    * A reference in Rust is very similar to a pointer in C in terms of usage,
-    but with much more compile time restrictions on
-      how it can be stored and moved around to other functions.
-    * A raw pointer in Rust is similar to a pointer in C that it represents a number that can be
-      copied or passed around, and even turned into numerical types where it can be modifed as a
-      number to do pointer math.
-- title: Dereferencing
+
+    Bellek ayrıntıları:
+
+    * Rust'ın referansları, kullanım açısından C'nin işaretçilerine benzemekle birlikte, saklanma ve taşınma aşamalarında daha çok 
+    derleme zamanı kısıtlaması içerirler.
+    
+    * Rust'ın ham işaretçileri, C'nin işaretçilerine benzemekle beraber; kopyalanabilen, bir işleve bağımsız değişken olarak iletilebilen, 
+    hatta tıpkı işaretçi aritmediğinde olduğu gibi, aritmetik işlemlerin yapılabileceği sayısal türe dönüştürülebilen bir sayıyı temsil eder.
+- title: Referansı Kaldırmak
   content_markdown: |
-    The process of accessing/manipulating data that is being referred to
-    by a *reference* (i.e. `&i32`) is called *dereferencing*. 
+    Bir **referans**ın atıfta bulunduğu verilere erişme ve/veya o verileri değiştirme işlemine **dereferencing**, dilimizdeki yaklaşık 
+    karşılığıyla **referansı kaldırmak** adı verilir.
 
-    References are used to access/manipulate data in two ways:
-    * Access to the referred data during assignment of variables.
-    * Access to fields or methods of the referred data.
+    Referansları verilere erişmek veya verileri değiştirmek amacıyla kullanmanın iki sebebi vardır:
+    
+    * Değişkenlerin atanması sırasında başvurulan verilere erişmek.
+    
+    * Başvurulan verilerin alan veya metotlarına erişmek.
 
-    Rust has some powerful operators that allow us to do this.
-- title: The * Operator
+    Rust, bunları gerçekleştirebilmemiz için güçlü işleçler sunar.
+- title: Yıldız İmi * İşleci
   content_markdown: >
-    The `*` operator is an explicit way to dereference a reference. 
+    Bir referans tarafından atıfta bulunulan verilere açık biçimde erişmenin yolu, asteriks olarak da bilinen yıldız imi `*` işlecini kullanmaktan geçer. 
 
 
     ```rust
@@ -88,63 +71,49 @@
     ```
 
 
-    Memory detail:
+    Bellek ayrıntıları:
 
-    - Because i32 is a primitive type that implements the `Copy` trait, 
-
-    the bytes of variable `a` on stack are copied into the bytes of variable
-    `b`.
-- title: The . Operator
+    - Temel bir tür olan **i32**, `Copy` özelliğini uygulayacağından, yığın üzerindeki `a` değişkeninin baytları, `b` değişkeninin baytlarına kopyalanmış olacaktır.
+- title: Nokta . İşleci
   content_markdown: >
-    The `.` operator is used in accessing fields and methods of a reference. It
-    works a bit more subtly.
+    Bir noktadan ibaret olan `.` işleci ise, bir referansın alan ve yöntemlerine erişirken kullanılır. Zekice çalışan bu işlece 
+    [bir örnek yardımıyla](https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=e17e9a477a8ab5a0d0b075ff07e33d4a) daha yakından bakalım:
 
 
     ```rust
 
-    let f = Foo { value: 42 };
+    let f = Tur { deger: 42 };
 
     let ref_ref_ref_f = &&&f;
 
-    println!("{}", ref_ref_ref_f.value);
+    println!("{}", ref_ref_ref_f.deger);
 
     ```
 
-    Whoa, why didn't we need to add `***` before `ref_ref_ref_f`? This is
-    because the `.` operator automatically dereferences 
-
-    a sequence of references. That last line is turned into the following by the
-    compiler automatically.
+    `ref_ref_ref_f`'den önce `***` işleçlerinin eklenmediğini fark ettiniz değil mi?. Bu şaşırtıcı durum `.` işlecinin, bir dizi referansı otomatik olarak 
+    kaldırmasından kaynaklanır. Oysa gerçekte örneğin son satırı, derleyici tarafından otomatik olarak aşağıda gösterildiği gibi değerlendirilmektedir.
 
 
     ```rust
 
-    println!("{}", (***ref_ref_ref_f).value);
+    println!("{}", (***ref_ref_ref_f).deger);
 
     ```
-- title: Smart Pointers
+- title: Akıllı İşaretçiler
   code: >-
-    https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&code=use%20std%3A%3Aops%3A%3ADeref%3B%0Astruct%20TattleTell%3CT%3E%20%7B%0A%20%20%20%20value%3A%20T%2C%0A%7D%0Aimpl%3CT%3E%20Deref%20for%20TattleTell%3CT%3E%20%7B%0A%20%20%20%20type%20Target%20%3D%20T%3B%0A%20%20%20%20fn%20deref(%26self)%20-%3E%20%26T%20%7B%0A%20%20%20%20%20%20%20%20println!(%22%7B%7D%20was%20used!%22%2C%20std%3A%3Aany%3A%3Atype_name%3A%3A%3CT%3E())%3B%0A%20%20%20%20%20%20%20%20%26self.value%0A%20%20%20%20%7D%0A%7D%0Afn%20main()%20%7B%0A%20%20%20%20let%20foo%20%3D%20TattleTell%20%7B%0A%20%20%20%20%20%20%20%20value%3A%20%22secret%20message%22%2C%0A%20%20%20%20%7D%3B%0A%20%20%20%20%2F%2F%20dereference%20occurs%20here%20immediately%20%0A%20%20%20%20%2F%2F%20after%20foo%20is%20auto-referenced%20for%20the%0A%20%20%20%20%2F%2F%20function%20%60len%60%0A%20%20%20%20println!(%22%7B%7D%22%2C%20foo.len())%3B%0A%7D%0A
+    https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=2e831c6b3f6601c23501e4a164bb1fd7
   content_markdown: >
-    In addition to the ability to create references to existing typed data using
-    the `&` operator, Rust gives us the ability
-
-    to create *reference-like* structs called **smart pointers**. 
+    Rust mevcut veri türlerine `&` işleci aracılığıyla başvurabilme yeteneğine ek olarak, *akıllı işaretçiler** olarak bilinen referans yapıları 
+    oluşturabilmemize de izin verir. 
 
 
-    We can think of references at a high level as a type that give us access to
-    another type.  Smart pointers are different in their 
-
-    behavior from normal references in that they operate based on internal logic
-    that a programmer writes. You — the programmer —
-
-    are the *smart* part.
+    Bu referansları daha yüksek seviyede ve diğer türlere erişim sağlayan, normal referanslardan farklı biçimde davranan türlermiş gibi düşünebilirsiniz. 
+    Akıllı işaretçiler, programcının yazdığı dahili mantığa dayalı olarak çalıştıklarından ve bu dahili mantığı tanımlamak da programcıya bağlı 
+    olduğundan, aslında buradaki **akıllı** kısım programcının ta kendisidir.
 
 
-    Typically smart pointers implement `Deref`, `DerefMut`, and `Drop` traits to
-    specify the logic of what should happen when
-
-    the structure is dereferenced with `*` and `.` operators.
+    Bu açıklamadan hareketle akıllı işaretçiler için, "bir yapıya `*` ve `.` işleçleri kullanılarak başvurulduğunda, olacakların mantığını tanımlamak 
+    amacıyla `Deref`, `DerefMut` ve `Drop` özelliklerini uygulayan yapılar" diyebiliriz.
 - title: Smart Unsafe Code
   code: >-
     https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&code=fn%20main()%20%7B%0A%20%20%20%20let%20a%3A%20%5Bu8%3B%204%5D%20%3D%20%5B86%2C%2014%2C%2073%2C%2064%5D%3B%0A%20%20%20%20%2F%2F%20this%20is%20a%20raw%20pointer.%20Getting%20the%20memory%20address%0A%20%20%20%20%2F%2F%20of%20something%20as%20a%20number%20is%20totally%20safe%0A%20%20%20%20let%20pointer_a%20%3D%20%26a%20as%20*const%20u8%20as%20usize%3B%0A%20%20%20%20println!(%22Data%20memory%20location%3A%20%7B%7D%22%2C%20pointer_a)%3B%0A%20%20%20%20%2F%2F%20Turning%20our%20number%20into%20a%20raw%20pointer%20to%20a%20f32%20is%0A%20%20%20%20%2F%2F%20also%20safe%20to%20do.%0A%20%20%20%20let%20pointer_b%20%3D%20pointer_a%20as%20*const%20f32%3B%0A%20%20%20%20let%20b%20%3D%20unsafe%20%7B%0A%20%20%20%20%20%20%20%20%2F%2F%20This%20is%20unsafe%20because%20we%20are%20telling%20the%20compiler%0A%20%20%20%20%20%20%20%20%2F%2F%20to%20assume%20our%20pointer%20is%20a%20valid%20f32%20and%0A%20%20%20%20%20%20%20%20%2F%2F%20dereference%20it's%20value%20into%20the%20variable%20b.%0A%20%20%20%20%20%20%20%20%2F%2F%20Rust%20has%20no%20way%20to%20verify%20this%20assumption%20is%20true.%0A%20%20%20%20%20%20%20%20*pointer_b%0A%20%20%20%20%7D%3B%0A%20%20%20%20println!(%22I%20swear%20this%20is%20a%20pie!%20%7B%7D%22%2C%20b)%3B%0A%7D%0A
